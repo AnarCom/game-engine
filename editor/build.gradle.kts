@@ -1,21 +1,22 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    id("org.jetbrains.kotlin.jvm") version "1.5.31"
     application
     id("org.openjfx.javafxplugin") version "0.0.13"
 }
-
-group = "org.example"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("no.tornado:tornadofx:1.7.20")
+    implementation(project(":common"))
+
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
@@ -27,7 +28,7 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("ru.nsu.engine.Application")
+    mainClass.set("ru.nsu.editor.ApplicationKT")
 }
 
 javafx {
@@ -46,7 +47,7 @@ javafx {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "ru.nsu.engine.ApplicationKT"
+        attributes["Main-Class"] = "ru.nsu.editor.ApplicationKT"
     }
     val dependencies = configurations
         .runtimeClasspath
