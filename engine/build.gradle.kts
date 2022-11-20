@@ -14,8 +14,9 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("no.tornado:tornadofx:1.7.20")
-    implementation(project(":common"))
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0")
 
+    implementation(project(":common"))
     testImplementation(kotlin("test"))
 }
 

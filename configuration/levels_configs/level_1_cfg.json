@@ -1,0 +1,57 @@
+{
+  "field_size": {
+    "width": 5,
+    "height": 5
+  },
+  "cell_size": {
+    "width": 40,
+    "height": 40
+  },
+  "field_parts_config": {
+    "grass": {
+      "file": "grass_1.png",
+      "is_build_available": true
+    },
+    "road": {
+      "file":"road_1.png",
+      "is_build_available": false
+    }
+  },
+  "field_structure": [
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "road",
+      "road",
+      "road",
+      "road",
+      "road"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ]
+  ]
+}
