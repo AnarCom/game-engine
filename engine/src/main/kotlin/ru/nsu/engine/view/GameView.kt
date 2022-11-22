@@ -168,7 +168,17 @@ class GameView : View("My View") {
                 errorLabel.text = "block already occupied!"
                 return
             }
-            buildTowerOnClick = false
+            if (
+                !levelConfiguration.fieldPartsConfig[
+                        levelConfiguration.fieldStructure[y][x]
+                ]!!.isBuildAvailable
+            ){
+                errorLabel.text = "cannot build on this block"
+                return
+            }
+
+
+                buildTowerOnClick = false
             towerLevel[y][x].image = Image(
                 "file:./configuration/content/" +
                         levelConfiguration.towersConfig[selectedTowerType]!!.file
@@ -176,14 +186,14 @@ class GameView : View("My View") {
             isBlockOccupied[y][x] = true
         }
         if (deleteTowerOnClick) {
-            if(!isBlockOccupied[y][x]){
+            if (!isBlockOccupied[y][x]) {
                 errorLabel.text = "cannot delete tower - there are no tower"
                 return
             }
             deleteTowerOnClick = false
             towerLevel[y][x].image = Image("empty.png")
             isBlockOccupied[y][x] = false
-         }
+        }
         errorLabel.text = ""
     }
 }
