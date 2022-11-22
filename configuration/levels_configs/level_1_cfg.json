@@ -1,7 +1,7 @@
 {
   "field_size": {
-    "width": 5,
-    "height": 5
+    "width": 10,
+    "height": 9
   },
   "cell_size": {
     "width": 40,
@@ -13,7 +13,7 @@
       "is_build_available": true
     },
     "road": {
-      "file":"road_1.png",
+      "file": "road_1.png",
       "is_build_available": false
     }
   },
@@ -23,9 +23,7 @@
       "grass",
       "grass",
       "grass",
-      "grass"
-    ],
-    [
+      "grass",
       "grass",
       "grass",
       "grass",
@@ -33,6 +31,47 @@
       "grass"
     ],
     [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
       "road",
       "road",
       "road",
@@ -44,6 +83,11 @@
       "grass",
       "grass",
       "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
       "grass"
     ],
     [
@@ -51,7 +95,90 @@
       "grass",
       "grass",
       "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass"
+    ],
+    [
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
+      "grass",
       "grass"
     ]
-  ]
+  ],
+  "towers_config": {
+    "type_1": {
+      "file": "tower_1.png",
+      "updates": [
+        {
+          "radius": 1,
+          "max_enemy_count": -1,
+          "cost": 30,
+          "shooting_speed": 10,
+          "enemy_damage": 10
+        },
+        {
+          "radius": 2,
+          "max_enemy_count": -1,
+          "cost": 35,
+          "shooting_speed": 7,
+          "enemy_damage": 10
+        },
+        {
+          "radius": 3,
+          "max_enemy_count": -1,
+          "cost": 50,
+          "shooting_speed": 5,
+          "enemy_damage": 10
+        }
+      ]
+    },
+    "type_2": {
+      "file": "tower_2.png",
+      "updates": [
+        {
+          "radius": 2,
+          "max_enemy_count": -1,
+          "cost": 30,
+          "shooting_speed": 10,
+          "enemy_damage": 10
+        },
+        {
+          "radius": 3,
+          "max_enemy_count": -1,
+          "cost": 35,
+          "shooting_speed": 7,
+          "enemy_damage": 15
+        },
+        {
+          "radius": 4,
+          "max_enemy_count": -1,
+          "cost": 50,
+          "shooting_speed": 5,
+          "enemy_damage": 20
+        }
+      ]
+    }
+  }
 }
