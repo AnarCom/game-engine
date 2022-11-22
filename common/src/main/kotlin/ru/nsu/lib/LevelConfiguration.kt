@@ -19,5 +19,8 @@ open class LevelConfiguration(
     val fieldStructure: Array<Array<String>>,
 
     @field:JsonProperty("towers_config")
-    val towersConfig:Map<String, TowerData>
+    val towersConfig:Map<String, TowerData>,
+
+    @field:JsonProperty("start_money")
+    val startMoney:Int,
 )

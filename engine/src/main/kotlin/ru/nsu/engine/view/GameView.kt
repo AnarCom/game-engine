@@ -3,6 +3,8 @@ package ru.nsu.engine.view
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.scene.Cursor
+import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
@@ -16,6 +18,42 @@ class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
+    private val isBlockOccupied: Array<Array<Boolean>>
+
+    // user window state
+    private var selectedTowerType: String = ""
+    private val errorLabel: Label = label("") {
+        textFill = c("red")
+    }
+    private val canselButton: Button = button("cancel") {
+        isDisable = true
+        action {
+            buildTowerOnClick = false
+            deleteTowerOnClick = false
+        }
+    }
+    private var buildTowerOnClick: Boolean = false
+        set(value) {
+//            deleteTowerOnClick = false
+            canselButton.isDisable = !value
+            field = value
+            root.center.cursor = if (value) {
+                Cursor.HAND
+            } else {
+                Cursor.DEFAULT
+            }
+        }
+    private var deleteTowerOnClick: Boolean = false
+        set(value) {
+//            buildTowerOnClick = false
+            canselButton.isDisable = !value
+            field = value
+            root.center.cursor = if (value) {
+                Cursor.CROSSHAIR
+            } else {
+                Cursor.DEFAULT
+            }
+        }
 
     init {
         val mapper = jacksonObjectMapper()
@@ -44,7 +82,6 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
-        val road = "road_1.png"
 
         towerLevel = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
@@ -64,6 +101,11 @@ class GameView : View("My View") {
             }.toTypedArray()
         }.toTypedArray()
 
+        isBlockOccupied = Array(levelConfiguration.fieldStructure.size) {
+            Array(levelConfiguration.fieldStructure[it].size) {
+                false
+            }
+        }
     }
 
     override val root = borderpane {
@@ -87,18 +129,28 @@ class GameView : View("My View") {
         }
         right {
             vbox {
-                for(i in levelConfiguration.towersConfig.keys){
-                    button("Построить $i"){
+                for (i in levelConfiguration.towersConfig.keys) {
+                    button("Построить $i") {
                         action {
                             println(i)
+                            selectedTowerType = i
+                            buildTowerOnClick = true
                         }
                     }
                 }
+                button("delete tower") {
+                    action {
+                        deleteTowerOnClick = true
+                    }
+                }
+                add(canselButton)
             }
         }
 
         top {
-            button("top")
+            hbox {
+                add(errorLabel)
+            }
         }
     }
 
@@ -111,7 +163,27 @@ class GameView : View("My View") {
     }
 
     private fun click(x: Int, y: Int) {
-        towerLevel[y][x].image = Image("file:./configuration/content/tower_1.png")
-        println("$x $y")
+        if (buildTowerOnClick) {
+            if (isBlockOccupied[y][x]) {
+                errorLabel.text = "block already occupied!"
+                return
+            }
+            buildTowerOnClick = false
+            towerLevel[y][x].image = Image(
+                "file:./configuration/content/" +
+                        levelConfiguration.towersConfig[selectedTowerType]!!.file
+            )
+            isBlockOccupied[y][x] = true
+        }
+        if (deleteTowerOnClick) {
+            if(!isBlockOccupied[y][x]){
+                errorLabel.text = "cannot delete tower - there are no tower"
+                return
+            }
+            deleteTowerOnClick = false
+            towerLevel[y][x].image = Image("empty.png")
+            isBlockOccupied[y][x] = false
+         }
+        errorLabel.text = ""
     }
 }

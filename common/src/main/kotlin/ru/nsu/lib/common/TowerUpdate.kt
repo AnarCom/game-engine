@@ -15,4 +15,7 @@ open class TowerUpdate(
 
     @field:JsonProperty("enemy_damage")
     val enemyDamage: Int,
+
+    @field:JsonProperty("remove_money_cashback")
+    val removeMoneyCashback: Int,
 )

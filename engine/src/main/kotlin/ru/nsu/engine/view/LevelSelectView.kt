@@ -7,7 +7,6 @@ import ru.nsu.lib.LevelData
 import tornadofx.*
 import java.io.File
 
-//TODO: подгрузка данных об уровнях из конфига
 //TODO: отображение isDisabled уровня по тому, пройден ли он или нет
 class LevelSelectView : View("My View") {
     private val levels: List<LevelData>

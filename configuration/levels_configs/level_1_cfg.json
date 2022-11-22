@@ -17,6 +17,7 @@
       "is_build_available": false
     }
   },
+  "start_money": 10000,
   "field_structure": [
     [
       "grass",
@@ -136,21 +137,24 @@
           "max_enemy_count": -1,
           "cost": 30,
           "shooting_speed": 10,
-          "enemy_damage": 10
+          "enemy_damage": 10,
+          "remove_money_cashback": 20
         },
         {
           "radius": 2,
           "max_enemy_count": -1,
           "cost": 35,
           "shooting_speed": 7,
-          "enemy_damage": 10
+          "enemy_damage": 10,
+          "remove_money_cashback": 20
         },
         {
           "radius": 3,
           "max_enemy_count": -1,
           "cost": 50,
           "shooting_speed": 5,
-          "enemy_damage": 10
+          "enemy_damage": 10,
+          "remove_money_cashback": 20
         }
       ]
     },
@@ -162,21 +166,24 @@
           "max_enemy_count": -1,
           "cost": 30,
           "shooting_speed": 10,
-          "enemy_damage": 10
+          "enemy_damage": 10,
+          "remove_money_cashback": 20
         },
         {
           "radius": 3,
           "max_enemy_count": -1,
           "cost": 35,
           "shooting_speed": 7,
-          "enemy_damage": 15
+          "enemy_damage": 15,
+          "remove_money_cashback": 20
         },
         {
           "radius": 4,
           "max_enemy_count": -1,
           "cost": 50,
           "shooting_speed": 5,
-          "enemy_damage": 20
+          "enemy_damage": 20,
+          "remove_money_cashback": 20
         }
       ]
     }
