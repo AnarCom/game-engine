@@ -2,7 +2,6 @@ package ru.nsu.engine.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import javafx.scene.Cursor
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.image.Image
@@ -10,6 +9,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import ru.nsu.engine.view.state.GameState
+import ru.nsu.engine.view.util.ActionOnClick
 import ru.nsu.lib.LevelConfiguration
 import tornadofx.*
 import java.io.File
@@ -28,33 +28,16 @@ class GameView : View("My View") {
     private val canselButton: Button = button("cancel") {
         isDisable = true
         action {
-            buildTowerOnClick = false
-            deleteTowerOnClick = false
+            actionOnClick = ActionOnClick.NONE
         }
     }
-    private var buildTowerOnClick: Boolean = false
-        set(value) {
-//            deleteTowerOnClick = false
-            canselButton.isDisable = !value
-            field = value
-            root.center.cursor = if (value) {
-                Cursor.HAND
-            } else {
-                Cursor.DEFAULT
-            }
-        }
-    private var deleteTowerOnClick: Boolean = false
-        set(value) {
-//            buildTowerOnClick = false
-            canselButton.isDisable = !value
-            field = value
-            root.center.cursor = if (value) {
-                Cursor.CROSSHAIR
-            } else {
-                Cursor.DEFAULT
-            }
-        }
 
+    private var actionOnClick: ActionOnClick = ActionOnClick.NONE
+        set(value) {
+            canselButton.isDisable = !value.cancelAvailable
+            root.center.cursor = value.cursor
+            field = value
+        }
     init {
         val mapper = jacksonObjectMapper()
         levelConfiguration = mapper.readValue(
@@ -124,23 +107,22 @@ class GameView : View("My View") {
                 }
             }
         }
-        left {
-            button("left")
-        }
+//        left {
+//            button("left")
+//        }
         right {
             vbox {
                 for (i in levelConfiguration.towersConfig.keys) {
                     button("Построить $i") {
                         action {
-                            println(i)
                             selectedTowerType = i
-                            buildTowerOnClick = true
+                            actionOnClick = ActionOnClick.BUILD
                         }
                     }
                 }
                 button("delete tower") {
                     action {
-                        deleteTowerOnClick = true
+                        actionOnClick = ActionOnClick.DELETE
                     }
                 }
                 add(canselButton)
@@ -163,27 +145,38 @@ class GameView : View("My View") {
     }
 
     private fun click(x: Int, y: Int) {
-        if (buildTowerOnClick) {
-            if (isBlockOccupied[y][x]) {
-                errorLabel.text = "block already occupied!"
-                return
+        when (actionOnClick) {
+            ActionOnClick.BUILD -> {
+                if (isBlockOccupied[y][x]) {
+                    errorLabel.text = "block already occupied!"
+                    return
+                }
+                if (
+                    !levelConfiguration.fieldPartsConfig[
+                            levelConfiguration.fieldStructure[y][x]
+                    ]!!.isBuildAvailable
+                ) {
+                    errorLabel.text = "cannot build on this block"
+                    return
+                }
+                actionOnClick = ActionOnClick.NONE
+                towerLevel[y][x].image = Image(
+                    "file:./configuration/content/" +
+                            levelConfiguration.towersConfig[selectedTowerType]!!.file
+                )
+                isBlockOccupied[y][x] = true
             }
-            buildTowerOnClick = false
-            towerLevel[y][x].image = Image(
-                "file:./configuration/content/" +
-                        levelConfiguration.towersConfig[selectedTowerType]!!.file
-            )
-            isBlockOccupied[y][x] = true
+            ActionOnClick.DELETE -> {
+                if (!isBlockOccupied[y][x]) {
+                    errorLabel.text = "cannot delete tower - there are no tower"
+                    return
+                }
+                actionOnClick = ActionOnClick.NONE
+                towerLevel[y][x].image = Image("empty.png")
+                isBlockOccupied[y][x] = false
+            }
+            ActionOnClick.NONE -> {}
         }
-        if (deleteTowerOnClick) {
-            if(!isBlockOccupied[y][x]){
-                errorLabel.text = "cannot delete tower - there are no tower"
-                return
-            }
-            deleteTowerOnClick = false
-            towerLevel[y][x].image = Image("empty.png")
-            isBlockOccupied[y][x] = false
-         }
         errorLabel.text = ""
     }
 }
