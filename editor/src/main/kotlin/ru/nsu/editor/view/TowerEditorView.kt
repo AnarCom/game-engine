@@ -3,11 +3,7 @@ package ru.nsu.editor.view
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.collections.FXCollections
-import javafx.geometry.Insets
 import javafx.scene.control.SkinBase
-import javafx.scene.layout.VBox
-import org.w3c.dom.Node
-import ru.nsu.editor.view.component.TowerUpgradeComponent
 import ru.nsu.lib.common.TowerData
 import ru.nsu.lib.common.TowerUpdate
 
@@ -15,8 +11,15 @@ import tornadofx.*
 import java.io.File
 
 class TowerEditorView : View("Tower editor") {
-    private var towerUpgradeComponents = mutableListOf<TowerUpgradeComponent>()
-    private lateinit var upgradeStack:VBox
+    private var towerData = TowerData("", arrayOf(TowerUpdate(0, 0, 0, 0, 0, 0)))
+
+    init {
+        val mapper = jacksonObjectMapper()
+//        mapper.writeValue(
+//            File("./configuration/test.json"),
+//            TowerData
+//        )
+    }
 
     override val root = borderpane {
         top{
@@ -28,96 +31,57 @@ class TowerEditorView : View("Tower editor") {
                 button("Save").action {
 
                 }
-                button("Import").action {
-
-                }
-                field("Type"){
-                    combobox<String>{//TODO: No field
-                        items=FXCollections.observableArrayList("Tower", "Enemy", "")
-                    }
-                }
+                button("Import")
             }
         }
         left {
-            vbox{
-                squeezebox {
-                    fold("Tower files", expanded = true){
-                        listview<String> {
-                            items.add("Alpha")
-                            items.add("Beta")
-                            items.add("Gamma")
-                            items.add("Delta")
-                            items.add("Epsilon")
-                        }
-                    }
-                    fold("Sprites", expanded = true){
-                        listview<String> {
-                            items.add("Alpha")
-                            items.add("Beta")
-                            items.add("Gamma")
-                            items.add("Delta")
-                            items.add("Epsilon")
-                        }
-                    }
-                }
-            }
+            button("Left")
         }
         right {
             vbox {
+//                text("OPTIONS")
+//                line()
                 squeezebox {
                     fold("Visuals", expanded = true){
                         form {
                             fieldset {
                                 field("Tower sprite"){
-                                    textfield(){
-
-                                    }
+                                    textfield(towerData.file)
                                 }
                                 field("Projectile sprite TBD"){
                                     textfield()
                                 }
                             }
+
                         }
                     }
-                }
-                scrollpane {
-                    upgradeStack = vbox{
-                        val new = TowerUpgradeComponent(0)
-                        towerUpgradeComponents.add(new)
-                        add(new)
-                    }
-                }
-                borderpane{
-                    left = hbox{
-                        button("Add upgrade"){
-                            action {
-                                val newComponent = TowerUpgradeComponent(towerUpgradeComponents.size)
-                                towerUpgradeComponents.add(newComponent)
-                                upgradeStack.add(newComponent)
-                            }
-                            hboxConstraints {
-                                marginTop = 10.0
-                            }
-                        }
-                    }
-                    right = hbox{
-                        button("Remove"){
-                            action {
-                                towerUpgradeComponents.removeLast().removeFromParent()
-                            }
-                            hboxConstraints {
-                                margin = Insets(10.0)
+                    /*for (update in towerData.updates) {
+
+                    }*/
+                    fold("Attack", expanded = true){
+                        form{
+                            fieldset {
+                                field("Type"){
+                                    combobox<TowerType>{//TODO: No field
+                                        items=FXCollections.observableArrayList(*TowerType.values())
+                                    }
+                                }
+                                field("Damage"){
+                                    textfield {
+                                        textProperty().addListener { obs, old, new ->
+                                            println("You typed: $new")
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        center {
-            rectangle {
-                width=200.0
-                height=200.0
-            }
-        }
+    }
+
+    enum class TowerType{
+        AOE, TARGET
     }
 }
