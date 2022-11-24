@@ -7,4 +7,11 @@ abstract class Entity(
     var canBeDeleted: Boolean = false,
 ) {
     abstract fun tickHandler(engine:Engine)
+    fun delete(){
+        canBeDeleted = true
+        onDelete()
+    }
+    open fun onDelete(){
+
+    }
 }
