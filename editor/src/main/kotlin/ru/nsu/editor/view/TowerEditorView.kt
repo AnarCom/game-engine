@@ -5,6 +5,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.collections.FXCollections
 import javafx.geometry.Insets
 import javafx.scene.control.SkinBase
+import javafx.scene.layout.VBox
+import org.w3c.dom.Node
+import ru.nsu.editor.view.component.TowerUpgradeComponent
 import ru.nsu.lib.common.TowerData
 import ru.nsu.lib.common.TowerUpdate
 
@@ -13,11 +16,12 @@ import java.io.File
 
 class TowerEditorView : View("Tower editor") {
     private var towerData = TowerData("",
-        arrayOf(
-            TowerUpdate(0, 0, 0, 0, 0, 0),
+        mutableListOf(
             TowerUpdate(0, 0, 0, 0, 0, 0)
         )
     )
+    private var towerUpgradeComponents = mutableListOf<TowerUpgradeComponent>()
+    private lateinit var upgradeStack:VBox
 
     init {
         val mapper = jacksonObjectMapper()
@@ -45,8 +49,6 @@ class TowerEditorView : View("Tower editor") {
         }
         right {
             vbox {
-//                text("OPTIONS")
-//                line()
                 squeezebox {
                     fold("Visuals", expanded = true){
                         form {
@@ -58,50 +60,37 @@ class TowerEditorView : View("Tower editor") {
                                     textfield()
                                 }
                             }
-
                         }
                     }
-//                    for((element, index) in towerData )
                 }
-                towerData.updates.forEachIndexed{ index, element ->
-                    borderpane {
-
-                        left = hbox{
-                            text("Upgrade #$index"){
-                                hboxConstraints {
-                                    marginTopBottom(15.0)
-                                }
+                scrollpane {
+                    upgradeStack = vbox{
+                        val new = TowerUpgradeComponent(0)
+                        towerUpgradeComponents.add(new)
+                        add(new)
+                    }
+                }
+                borderpane{
+                    left = hbox{
+                        button("Add upgrade"){
+                            action {
+//                                towerData.upgrades.add(TowerUpdate(0,0,0,0,0,0)) TODO: pull data from components only on save
+                                val newComponent = TowerUpgradeComponent(towerUpgradeComponents.size)
+                                towerUpgradeComponents.add(newComponent)
+                                upgradeStack.add(newComponent)
                             }
-                        }
-                        right = hbox{
-                            button("Remove"){
-                                hboxConstraints {
-                                    margin = Insets(10.0)
-                                }
+                            hboxConstraints {
+                                marginTop = 10.0
                             }
                         }
                     }
-                    squeezebox {//TODO move to commponent
-                        fold("Attack", expanded = true){
-                            form{
-                                fieldset {
-                                    field("Type"){
-                                        combobox<TowerType>{//TODO: No field
-                                            items=FXCollections.observableArrayList(*TowerType.values())
-                                        }
-                                    }
-                                    field("Damage"){
-                                        textfield {
-                                            textProperty().addListener { obs, old, new ->
-                                                println("You typed: $new")
-                                            }
-                                        }
-                                    }
-                                    field("Attack speed"){
-                                        textfield(){
-                                        }
-                                    }
-                                }
+                    right = hbox{
+                        button("Remove"){
+                            action {
+                                towerUpgradeComponents.removeLast().removeFromParent()
+                            }
+                            hboxConstraints {
+                                margin = Insets(10.0)
                             }
                         }
                     }
