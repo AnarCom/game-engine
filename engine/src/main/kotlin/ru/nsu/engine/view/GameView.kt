@@ -2,7 +2,6 @@ package ru.nsu.engine.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -10,6 +9,7 @@ import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.engine.view.state.GameState
+import ru.nsu.engine.view.subview.BuildTowerSubview
 import ru.nsu.engine.view.subview.TopGameSubview
 import ru.nsu.engine.view.subview.TowerConfigSubview
 import ru.nsu.engine.view.util.ActionOnClick
@@ -24,21 +24,13 @@ class GameView : View("My View") {
     private val engine: Engine = Engine()
 
     // user window state
-    private var selectedTowerType: String = ""
-
-    private val canselButton: Button = button("cancel") {
-        isDisable = true
-        action {
-            actionOnClick = ActionOnClick.NONE
-        }
-    }
-
     private val towerConfigSubview = TowerConfigSubview()
-    private val topGameSubview = TopGameSubview()
+    private val topSubview = TopGameSubview()
+    private val buildTowerSubview: BuildTowerSubview
 
-    private var actionOnClick: ActionOnClick = ActionOnClick.NONE
+    var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
-            canselButton.isDisable = !value.cancelAvailable
+            buildTowerSubview.canselButton.isDisable = !value.cancelAvailable
             root.center.cursor = value.cursor
             field = value
         }
@@ -50,6 +42,7 @@ class GameView : View("My View") {
                 "./configuration/levels_configs/${GameState.levelData!!.config}"
             )
         )
+        buildTowerSubview = BuildTowerSubview(levelConfiguration.towersConfig, this)
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
@@ -107,27 +100,14 @@ class GameView : View("My View") {
 //        }
         right {
             vbox {
-                for (i in levelConfiguration.towersConfig.keys) {
-                    button("Построить $i") {
-                        action {
-                            selectedTowerType = i
-                            actionOnClick = ActionOnClick.BUILD
-                        }
-                    }
-                }
-                button("delete tower") {
-                    action {
-                        actionOnClick = ActionOnClick.DELETE
-                    }
-                }
-                add(canselButton)
+                add(buildTowerSubview)
                 add(towerConfigSubview)
             }
         }
 
         top {
             hbox {
-                add(topGameSubview)
+                add(topSubview)
             }
         }
     }
@@ -144,17 +124,19 @@ class GameView : View("My View") {
         when (actionOnClick) {
             ActionOnClick.BUILD -> {
                 if (engine.getTowerFromPosition(x, y) != null) {
-                    topGameSubview.logError("block already occupied!")
+                    topSubview.logError("block already occupied!")
                     return
                 }
                 if (!levelConfiguration.fieldPartsConfig[levelConfiguration.fieldStructure[y][x]]!!.isBuildAvailable) {
-                    topGameSubview.logError("cannot build on this block")
+                    topSubview.logError("cannot build on this block")
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
                 engine.registerEntity(
                     Tower(
-                        levelConfiguration.towersConfig[selectedTowerType]!!,
+                        levelConfiguration.towersConfig[
+                                buildTowerSubview.selectedTowerType
+                        ]!!,
                         Position(x, y),
                         towerLevel[y][x]
                     )
@@ -164,7 +146,7 @@ class GameView : View("My View") {
             ActionOnClick.DELETE -> {
                 val tower = engine.getTowerFromPosition(x, y)
                 if (tower == null) {
-                    topGameSubview.logError("cannot delete tower - there are no tower")
+                    topSubview.logError("cannot delete tower - there are no tower")
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
@@ -181,6 +163,6 @@ class GameView : View("My View") {
                 }
             }
         }
-        topGameSubview.hideErrorLabel()
+        topSubview.hideErrorLabel()
     }
 }
