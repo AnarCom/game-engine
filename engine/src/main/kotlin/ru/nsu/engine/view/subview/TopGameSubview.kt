@@ -1,10 +1,19 @@
 package ru.nsu.engine.view.subview
 
 import javafx.scene.control.Label
-import ru.nsu.engine.ComparableAtomicInteger
+import ru.nsu.engine.Wallet
 import tornadofx.*
 
 class TopGameSubview : View("My View") {
+
+    val wallet: Wallet = Wallet(0,
+        {
+            moneyLabel.text = "Balance: $it $"
+        },
+        {
+            logError("Not enough money")
+        }
+    )
 
     private val moneyLabel: Label = label("") {
         textFill = c("green")
@@ -14,7 +23,6 @@ class TopGameSubview : View("My View") {
         textFill = c("red")
     }
 
-    private val money: ComparableAtomicInteger = ComparableAtomicInteger()
 
     override val root = hbox {
         add(moneyLabel)
@@ -27,30 +35,5 @@ class TopGameSubview : View("My View") {
 
     fun hideErrorLabel() {
         errorLabel.text = ""
-    }
-
-    fun addMoney(a: Int) {
-        money.add(a)
-        showNewMoneyValue()
-    }
-
-    fun writeOffMoney(a: Int, showErrorIfNot: Boolean = true): Boolean {
-        if (
-            money.decIfTrue(a) {
-                it > a
-            }
-        ) {
-            return true
-        } else {
-            if (showErrorIfNot) {
-                logError("Not enough money")
-            }
-            return false
-        }
-    }
-
-    @Synchronized
-    private fun showNewMoneyValue() {
-        moneyLabel.text = "Balance: ${money.get()} $"
     }
 }

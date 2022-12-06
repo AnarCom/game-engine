@@ -49,6 +49,4 @@ class Tower(
                     activeUpdate + 1
             ].cost
         }
-
-
 }

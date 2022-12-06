@@ -1,6 +1,7 @@
 package ru.nsu.engine.view.subview
 
 import javafx.scene.control.Button
+import ru.nsu.engine.Wallet
 import ru.nsu.engine.view.GameView
 import ru.nsu.engine.view.util.ActionOnClick
 import ru.nsu.lib.common.TowerData

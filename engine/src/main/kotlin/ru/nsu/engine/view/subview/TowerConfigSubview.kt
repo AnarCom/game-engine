@@ -7,7 +7,8 @@ import tornadofx.*
 
 class TowerConfigSubview : View() {
 
-    private var activeTower:Tower? = null
+    var activeTower:Tower? = null
+    private set
 
     private val radius = textfield {
         isEditable = false
@@ -63,7 +64,7 @@ class TowerConfigSubview : View() {
         isVisible = false
     }
 
-    fun showTowerConfig(towerUpdate: TowerUpdate) {
+    private fun showTowerConfig(towerUpdate: TowerUpdate) {
         maxEnemyCount.text = towerUpdate.maxEnemyCount.toString()
         radius.text = towerUpdate.radius.toString()
         shootingSpeed.text = towerUpdate.shootingSpeed.toString()

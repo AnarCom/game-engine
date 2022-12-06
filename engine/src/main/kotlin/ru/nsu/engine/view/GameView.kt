@@ -22,13 +22,14 @@ class GameView : View("My View") {
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
     private val engine: Engine = Engine() {
-        topSubview.addMoney(it)
+        wallet.addMoney(it)
     }
 
     // user window state
     private val towerConfigSubview = TowerConfigSubview()
     private val topSubview = TopGameSubview()
     private val buildTowerSubview: BuildTowerSubview
+    private val wallet = topSubview.wallet
 
     var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
@@ -44,8 +45,11 @@ class GameView : View("My View") {
                 "./configuration/levels_configs/${GameState.levelData!!.config}"
             )
         )
-        buildTowerSubview = BuildTowerSubview(levelConfiguration.towersConfig, this)
-        topSubview.addMoney(levelConfiguration.startMoney)
+        buildTowerSubview = BuildTowerSubview(
+            levelConfiguration.towersConfig,
+            this
+        )
+        wallet.addMoney(levelConfiguration.startMoney)
 
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
@@ -136,6 +140,16 @@ class GameView : View("My View") {
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
+                if (!wallet.writeOffMoneyIfCan(
+                        levelConfiguration.towersConfig[
+                                buildTowerSubview.selectedTowerType
+                        ]!!
+                            .updates[0]
+                            .cost
+                    )
+                ) {
+                    return
+                }
                 engine.registerEntity(
                     Tower(
                         levelConfiguration.towersConfig[
@@ -155,12 +169,12 @@ class GameView : View("My View") {
                 }
                 actionOnClick = ActionOnClick.NONE
                 tower.delete()
+                towerConfigSubview.hide()
             }
 
             ActionOnClick.NONE -> {
                 val tower = engine.getTowerFromPosition(x, y)
                 if (tower != null) {
-//                    val activeUpdate = tower.getActiveUpdate()
                     towerConfigSubview.showTowerConfig(tower)
                 } else {
                     towerConfigSubview.hide()
