@@ -12,6 +12,8 @@ class Tower(
     objectId: Int = 0,
     canBeDeleted: Boolean = false,
 ) : Entity(objectId, canBeDeleted) {
+    private var activeUpdate: Int = 0
+
     init {
         towerLevelImage.image = Image(
             "file:./configuration/content/" +
@@ -25,5 +27,15 @@ class Tower(
 
     override fun onDelete() {
         towerLevelImage.image = Image("empty.png")
+    }
+
+    fun getActiveUpdate() = towerConfig.updates[activeUpdate]
+    fun canBeUpdated() = (towerConfig.updates.size - 1) > activeUpdate
+    fun update(): Boolean {
+        if (canBeUpdated()) {
+            activeUpdate++
+            return true
+        }
+        return false
     }
 }
