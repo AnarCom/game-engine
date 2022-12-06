@@ -7,7 +7,9 @@ import javafx.util.Duration
 import ru.nsu.engine.engine.entity.Entity
 import ru.nsu.engine.engine.entity.Tower
 
-class Engine() {
+class Engine(
+    private val moneyHandler: (moneyValue: Int) -> Unit
+) {
     private val entityList: MutableList<Entity> = mutableListOf()
     private var idCounter: Int = 0
     private val timeline = Timeline()
@@ -52,9 +54,9 @@ class Engine() {
             }
             toDelete.forEach {
                 entityList.remove(it)
-            }
-            if (toDelete.isNotEmpty()) {
-                println(toDelete.size)
+                if(it.moneyAtDeletion != 0){
+                    moneyHandler(it.moneyAtDeletion)
+                }
             }
         }
     }

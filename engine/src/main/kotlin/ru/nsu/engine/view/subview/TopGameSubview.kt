@@ -1,8 +1,8 @@
 package ru.nsu.engine.view.subview
 
 import javafx.scene.control.Label
+import ru.nsu.engine.ComparableAtomicInteger
 import tornadofx.*
-import java.util.concurrent.atomic.AtomicInteger
 
 class TopGameSubview : View("My View") {
 
@@ -14,11 +14,11 @@ class TopGameSubview : View("My View") {
         textFill = c("red")
     }
 
-    private val money: AtomicInteger = AtomicInteger(0)
+    private val money: ComparableAtomicInteger = ComparableAtomicInteger()
 
     override val root = hbox {
+        add(moneyLabel)
         add(errorLabel)
-        label("asdasdasd")
     }
 
     fun logError(error: String) {
@@ -30,8 +30,23 @@ class TopGameSubview : View("My View") {
     }
 
     fun addMoney(a: Int) {
-        money.addAndGet(a)
+        money.add(a)
         showNewMoneyValue()
+    }
+
+    fun writeOffMoney(a: Int, showErrorIfNot: Boolean = true): Boolean {
+        if (
+            money.decIfTrue(a) {
+                it > a
+            }
+        ) {
+            return true
+        } else {
+            if (showErrorIfNot) {
+                logError("Not enough money")
+            }
+            return false
+        }
     }
 
     @Synchronized

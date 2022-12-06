@@ -19,6 +19,7 @@ class Tower(
             "file:./configuration/content/" +
                     towerConfig.file
         )
+        moneyAtDeletion = getActiveUpdate().removeMoneyCashback
     }
 
     override fun tickHandler(engine: Engine) {
@@ -34,8 +35,20 @@ class Tower(
     fun update(): Boolean {
         if (canBeUpdated()) {
             activeUpdate++
+            moneyAtDeletion = getActiveUpdate().removeMoneyCashback
             return true
         }
         return false
     }
+
+    fun getUpdateCost(): Int =
+        if (!canBeUpdated()) {
+            -1
+        } else {
+            towerConfig.updates[
+                    activeUpdate + 1
+            ].cost
+        }
+
+
 }

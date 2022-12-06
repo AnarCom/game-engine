@@ -1,10 +1,13 @@
 package ru.nsu.engine.view.subview
 
 import javafx.scene.Parent
+import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 
 class TowerConfigSubview : View() {
+
+    private var activeTower:Tower? = null
 
     private val radius = textfield {
         isEditable = false
@@ -59,7 +62,8 @@ class TowerConfigSubview : View() {
         }
         isVisible = false
     }
-    fun showTowerConfig(towerUpdate: TowerUpdate){
+
+    fun showTowerConfig(towerUpdate: TowerUpdate) {
         maxEnemyCount.text = towerUpdate.maxEnemyCount.toString()
         radius.text = towerUpdate.radius.toString()
         shootingSpeed.text = towerUpdate.shootingSpeed.toString()
@@ -67,9 +71,16 @@ class TowerConfigSubview : View() {
         removeMoneyCashback.text = towerUpdate.removeMoneyCashback.toString()
         show()
     }
-    fun hide(){
+
+    fun showTowerConfig(tower: Tower) {
+        showTowerConfig(tower.getActiveUpdate())
+        activeTower = tower
+    }
+
+    fun hide() {
         this.root.isVisible = false
     }
+
     fun show() {
         this.root.isVisible = true
     }

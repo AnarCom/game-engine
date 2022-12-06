@@ -21,7 +21,9 @@ class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
-    private val engine: Engine = Engine()
+    private val engine: Engine = Engine() {
+        topSubview.addMoney(it)
+    }
 
     // user window state
     private val towerConfigSubview = TowerConfigSubview()
@@ -43,6 +45,8 @@ class GameView : View("My View") {
             )
         )
         buildTowerSubview = BuildTowerSubview(levelConfiguration.towersConfig, this)
+        topSubview.addMoney(levelConfiguration.startMoney)
+
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
@@ -156,8 +160,8 @@ class GameView : View("My View") {
             ActionOnClick.NONE -> {
                 val tower = engine.getTowerFromPosition(x, y)
                 if (tower != null) {
-                    val activeUpdate = tower.getActiveUpdate()
-                    towerConfigSubview.showTowerConfig(activeUpdate)
+//                    val activeUpdate = tower.getActiveUpdate()
+                    towerConfigSubview.showTowerConfig(tower)
                 } else {
                     towerConfigSubview.hide()
                 }

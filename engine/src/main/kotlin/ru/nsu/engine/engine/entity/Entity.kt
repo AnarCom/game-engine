@@ -6,12 +6,16 @@ abstract class Entity(
     var objectId: Int = 0,
     var canBeDeleted: Boolean = false,
 ) {
-    abstract fun tickHandler(engine:Engine)
-    fun delete(){
+    var moneyAtDeletion: Int = 0
+        protected set
+
+    abstract fun tickHandler(engine: Engine)
+    fun delete() {
         canBeDeleted = true
         onDelete()
     }
-    open fun onDelete(){
+
+    open fun onDelete() {
 
     }
 }
