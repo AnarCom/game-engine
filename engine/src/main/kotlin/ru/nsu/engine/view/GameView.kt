@@ -2,13 +2,16 @@ package ru.nsu.engine.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import ru.nsu.engine.engine.Engine
+import ru.nsu.engine.engine.entity.Position
+import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.engine.view.state.GameState
+import ru.nsu.engine.view.subview.BuildTowerSubview
+import ru.nsu.engine.view.subview.TopGameSubview
+import ru.nsu.engine.view.subview.TowerConfigSubview
 import ru.nsu.engine.view.util.ActionOnClick
 import ru.nsu.lib.LevelConfiguration
 import tornadofx.*
@@ -18,26 +21,23 @@ class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
-    private val isBlockOccupied: Array<Array<Boolean>>
+    private val engine: Engine = Engine() {
+        wallet.addMoney(it)
+    }
 
     // user window state
-    private var selectedTowerType: String = ""
-    private val errorLabel: Label = label("") {
-        textFill = c("red")
-    }
-    private val canselButton: Button = button("cancel") {
-        isDisable = true
-        action {
-            actionOnClick = ActionOnClick.NONE
-        }
-    }
+    private val towerConfigSubview = TowerConfigSubview()
+    private val topSubview = TopGameSubview()
+    private val buildTowerSubview: BuildTowerSubview
+    private val wallet = topSubview.wallet
 
-    private var actionOnClick: ActionOnClick = ActionOnClick.NONE
+    var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
-            canselButton.isDisable = !value.cancelAvailable
+            buildTowerSubview.canselButton.isDisable = !value.cancelAvailable
             root.center.cursor = value.cursor
             field = value
         }
+
     init {
         val mapper = jacksonObjectMapper()
         levelConfiguration = mapper.readValue(
@@ -45,13 +45,16 @@ class GameView : View("My View") {
                 "./configuration/levels_configs/${GameState.levelData!!.config}"
             )
         )
+        buildTowerSubview = BuildTowerSubview(
+            levelConfiguration.towersConfig,
+            this
+        )
+        wallet.addMoney(levelConfiguration.startMoney)
+
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
-                    "file:./configuration/content/" +
-                            levelConfiguration.fieldPartsConfig[
-                                    levelConfiguration.fieldStructure[i][j]
-                            ]!!.file,
+                    "file:./configuration/content/" + levelConfiguration.fieldPartsConfig[levelConfiguration.fieldStructure[i][j]]!!.file,
                     false
                 ) {
                     fitWidth = levelConfiguration.cellSize.width.toDouble()
@@ -69,8 +72,7 @@ class GameView : View("My View") {
         towerLevel = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
-                    "empty.png",
-                    false
+                    "empty.png", false
                 ) {
                     fitWidth = levelConfiguration.cellSize.width.toDouble()
                     fitHeight = levelConfiguration.cellSize.height.toDouble()
@@ -83,12 +85,6 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
-
-        isBlockOccupied = Array(levelConfiguration.fieldStructure.size) {
-            Array(levelConfiguration.fieldStructure[it].size) {
-                false
-            }
-        }
     }
 
     override val root = borderpane {
@@ -112,26 +108,14 @@ class GameView : View("My View") {
 //        }
         right {
             vbox {
-                for (i in levelConfiguration.towersConfig.keys) {
-                    button("Построить $i") {
-                        action {
-                            selectedTowerType = i
-                            actionOnClick = ActionOnClick.BUILD
-                        }
-                    }
-                }
-                button("delete tower") {
-                    action {
-                        actionOnClick = ActionOnClick.DELETE
-                    }
-                }
-                add(canselButton)
+                add(buildTowerSubview)
+                add(towerConfigSubview)
             }
         }
 
         top {
             hbox {
-                add(errorLabel)
+                add(topSubview)
             }
         }
     }
@@ -147,36 +131,56 @@ class GameView : View("My View") {
     private fun click(x: Int, y: Int) {
         when (actionOnClick) {
             ActionOnClick.BUILD -> {
-                if (isBlockOccupied[y][x]) {
-                    errorLabel.text = "block already occupied!"
+                if (engine.getTowerFromPosition(x, y) != null) {
+                    topSubview.logError("block already occupied!")
                     return
                 }
-                if (
-                    !levelConfiguration.fieldPartsConfig[
-                            levelConfiguration.fieldStructure[y][x]
-                    ]!!.isBuildAvailable
+                if (!levelConfiguration.fieldPartsConfig[levelConfiguration.fieldStructure[y][x]]!!.isBuildAvailable) {
+                    topSubview.logError("cannot build on this block")
+                    return
+                }
+                actionOnClick = ActionOnClick.NONE
+                if (!wallet.writeOffMoneyIfCan(
+                        levelConfiguration.towersConfig[
+                                buildTowerSubview.selectedTowerType
+                        ]!!
+                            .updates[0]
+                            .cost
+                    )
                 ) {
-                    errorLabel.text = "cannot build on this block"
                     return
                 }
-                actionOnClick = ActionOnClick.NONE
-                towerLevel[y][x].image = Image(
-                    "file:./configuration/content/" +
-                            levelConfiguration.towersConfig[selectedTowerType]!!.file
+                engine.registerEntity(
+                    Tower(
+                        levelConfiguration.towersConfig[
+                                buildTowerSubview.selectedTowerType
+                        ]!!,
+                        Position(x, y),
+                        towerLevel[y][x]
+                    )
                 )
-                isBlockOccupied[y][x] = true
             }
+
             ActionOnClick.DELETE -> {
-                if (!isBlockOccupied[y][x]) {
-                    errorLabel.text = "cannot delete tower - there are no tower"
+                val tower = engine.getTowerFromPosition(x, y)
+                if (tower == null) {
+                    topSubview.logError("cannot delete tower - there are no tower")
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
-                towerLevel[y][x].image = Image("empty.png")
-                isBlockOccupied[y][x] = false
+                tower.delete()
+                towerConfigSubview.hide()
             }
-            ActionOnClick.NONE -> {}
+
+            ActionOnClick.NONE -> {
+                val tower = engine.getTowerFromPosition(x, y)
+                if (tower != null) {
+                    towerConfigSubview.showTowerConfig(tower)
+                } else {
+                    towerConfigSubview.hide()
+                }
+            }
         }
-        errorLabel.text = ""
+        topSubview.hideErrorLabel()
     }
 }
