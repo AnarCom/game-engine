@@ -25,6 +25,8 @@ class GameView : View("My View") {
         wallet.addMoney(it)
     }
 
+    private val circleImage: ImageView
+
     // user window state
     private val towerConfigSubview = TowerConfigSubview()
     private val topSubview = TopGameSubview()
@@ -68,6 +70,17 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
+        circleImage = imageview() {
+            x = 0.0
+            y = 0.0
+            fitHeight =
+                (levelConfiguration.cellSize.height * levelConfiguration.fieldStructure.size)
+                    .toDouble()
+
+            fitWidth =
+                (levelConfiguration.cellSize.width * levelConfiguration.fieldStructure[0].size)
+                    .toDouble()
+        }
 
         towerLevel = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
@@ -85,6 +98,7 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
+
     }
 
     override val root = borderpane {
@@ -176,6 +190,7 @@ class GameView : View("My View") {
                 val tower = engine.getTowerFromPosition(x, y)
                 if (tower != null) {
                     towerConfigSubview.showTowerConfig(tower)
+
                 } else {
                     towerConfigSubview.hide()
                 }
