@@ -2,11 +2,24 @@ package ru.nsu.engine.view.subview
 
 import javafx.scene.Parent
 import javafx.scene.control.Button
+import javafx.scene.image.ImageView
 import ru.nsu.engine.engine.entity.Tower
+import ru.nsu.engine.util.TowerRadiusImageFactory
+import ru.nsu.lib.common.Size
 import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 
-class TowerConfigSubview : View() {
+
+class TowerConfigSubview(
+    private val attackRadiusImageView: ImageView,
+    private val pixelSize:Size
+) : View() {
+
+    private val towerRadiusImageFactory = TowerRadiusImageFactory(
+        xFinish = attackRadiusImageView.fitWidth.toInt(),
+        yFinish = attackRadiusImageView.fitHeight.toInt(),
+        pixelSize = pixelSize
+    )
 
     private var updateButton: Button = button("Update") {
         action {
@@ -93,6 +106,7 @@ class TowerConfigSubview : View() {
     fun showTowerConfig(tower: Tower) {
         activeTower = tower
         showTowerConfig(tower.getActiveUpdate())
+        attackRadiusImageView.image = towerRadiusImageFactory.produceImage(activeTower.towerPosition)
     }
 
     private fun showUpdateButton() {

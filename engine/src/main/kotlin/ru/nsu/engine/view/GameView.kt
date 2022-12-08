@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
+import ru.nsu.engine.util.Wallet
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
@@ -21,17 +22,17 @@ class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
-    private val engine: Engine = Engine() {
+    private val engine: Engine = Engine {
         wallet.addMoney(it)
     }
 
     private val circleImage: ImageView
 
     // user window state
-    private val towerConfigSubview = TowerConfigSubview()
+    private val towerConfigSubview: TowerConfigSubview
     private val topSubview = TopGameSubview()
     private val buildTowerSubview: BuildTowerSubview
-    private val wallet = topSubview.wallet
+    private val wallet: Wallet
 
     var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
@@ -51,7 +52,6 @@ class GameView : View("My View") {
             levelConfiguration.towersConfig,
             this
         )
-        wallet.addMoney(levelConfiguration.startMoney)
 
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
@@ -70,7 +70,7 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
-        circleImage = imageview() {
+        circleImage = imageview {
             x = 0.0
             y = 0.0
             fitHeight =
@@ -81,7 +81,10 @@ class GameView : View("My View") {
                 (levelConfiguration.cellSize.width * levelConfiguration.fieldStructure[0].size)
                     .toDouble()
         }
-
+        towerConfigSubview = TowerConfigSubview(
+            circleImage,
+            levelConfiguration.cellSize,
+        )
         towerLevel = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
@@ -99,6 +102,8 @@ class GameView : View("My View") {
             }.toTypedArray()
         }.toTypedArray()
 
+        wallet = topSubview.wallet
+        wallet.addMoney(levelConfiguration.startMoney)
     }
 
     override val root = borderpane {
@@ -115,6 +120,8 @@ class GameView : View("My View") {
                         image.toFront()
                     }
                 }
+                add(circleImage)
+                circleImage.toFront()
             }
         }
 //        left {
@@ -190,7 +197,6 @@ class GameView : View("My View") {
                 val tower = engine.getTowerFromPosition(x, y)
                 if (tower != null) {
                     towerConfigSubview.showTowerConfig(tower)
-
                 } else {
                     towerConfigSubview.hide()
                 }

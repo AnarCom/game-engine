@@ -1,4 +1,4 @@
-package ru.nsu.engine
+package ru.nsu.engine.util
 
 class Wallet(
     initialValue: Int,
