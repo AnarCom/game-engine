@@ -1,7 +1,7 @@
 package ru.nsu.engine.view.subview
 
 import javafx.scene.control.Label
-import ru.nsu.engine.Wallet
+import ru.nsu.engine.util.Wallet
 import tornadofx.*
 
 class TopGameSubview : View("My View") {
