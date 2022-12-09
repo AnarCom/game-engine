@@ -12,7 +12,7 @@ import tornadofx.*
 
 class TowerConfigSubview(
     private val attackRadiusImageView: ImageView,
-    private val pixelSize:Size
+    pixelSize: Size
 ) : View() {
 
     private val towerRadiusImageFactory = TowerRadiusImageFactory(
@@ -106,7 +106,10 @@ class TowerConfigSubview(
     fun showTowerConfig(tower: Tower) {
         activeTower = tower
         showTowerConfig(tower.getActiveUpdate())
-        attackRadiusImageView.image = towerRadiusImageFactory.produceImage(activeTower.towerPosition)
+        attackRadiusImageView.image = towerRadiusImageFactory.produceImage(
+            activeTower.towerPosition,
+            activeTower.getActiveUpdate().radius
+        )
     }
 
     private fun showUpdateButton() {
@@ -121,9 +124,11 @@ class TowerConfigSubview(
 
     fun hide() {
         this.root.isVisible = false
+        attackRadiusImageView.hide()
     }
 
     fun show() {
         this.root.isVisible = true
+        attackRadiusImageView.show()
     }
 }

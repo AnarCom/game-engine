@@ -11,14 +11,19 @@ class TowerRadiusImageFactory(
     private val yFinish: Int,
     private val pixelSize: Size
 ) {
-    fun produceImage(towerPosition:Position): Image {
+    fun produceImage(
+        towerPosition: Position,
+        radius: Int,
+    ): Image {
+        val xPos = towerPosition.x * pixelSize.width
+        val yPos = towerPosition.y * pixelSize.height
         val writableImage = WritableImage(xFinish, yFinish)
         val pixelWriter = writableImage.pixelWriter
-//        for (i in 0 until xFinish) {
-//            for (j in 0 until yFinish) {
-//                pixelWriter.setColor(i, j, Color.color(0.5, 0.5, 0.5, 1.0))
-//            }
-//        }
+        for (i in xPos until (xPos + pixelSize.width)) {
+            for (j in yPos until (yPos + pixelSize.height)) {
+                pixelWriter.setColor(i, j, Color.color(0.5, 0.5, 0.5, 0.5))
+            }
+        }
         return writableImage
     }
 }
