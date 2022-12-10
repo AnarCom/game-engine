@@ -187,5 +187,38 @@
         }
       ]
     }
+  },
+  "enemy_config": {
+    "enemy_types": {
+      "enemy_type_1": {
+        "health": 10,
+        "speed": 1000,
+        "file": "enemy_file_1.png",
+        "enemy_attack": 1
+      },
+      "enemy_type_2": {
+        "health": 20,
+        "speed": 2000,
+        "file": "enemy_file_2.png",
+        "enemy_attack": 2
+      }
+    },
+    "enemy_waves": [
+      {
+        "between_delay_ms": 1000,
+        "wave": [
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2"
+        ]
+      }
+    ]
   }
 }
