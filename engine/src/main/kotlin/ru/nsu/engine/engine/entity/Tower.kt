@@ -23,7 +23,6 @@ class Tower(
     }
 
     override fun tickHandler(engine: Engine) {
-        TODO("Not yet implemented")
     }
 
     override fun onDelete() {

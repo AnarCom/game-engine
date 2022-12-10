@@ -7,5 +7,8 @@ open class EnemyConfig(
     val enemyTypes: Map<String, EnemyType>,
 
     @field:JsonProperty("enemy_waves")
-    val enemyWaves: Array<EnemyWave>
+    val enemyWaves: Array<EnemyWave>,
+
+    @field:JsonProperty("enemy_path")
+    val enemyPath: Array<EnemyPathPoint>,
 )

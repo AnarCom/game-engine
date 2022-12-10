@@ -218,7 +218,37 @@
           "enemy_type_1",
           "enemy_type_2"
         ]
+      },
+      {
+        "between_delay_ms": 500,
+        "wave": [
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2"
+        ]
       }
+    ],
+    "enemy_path": [
+      {"x": "0", "y": "4"},
+      {"x": "1", "y": "4"},
+      {"x": "1", "y": "3"},
+      {"x": "2", "y": "3"},
+      {"x": "3", "y": "3"},
+      {"x": "4", "y": "3"},
+      {"x": "5", "y": "3"},
+      {"x": "5", "y": "4"},
+      {"x": "6", "y": "4"},
+      {"x": "7", "y": "4"},
+      {"x": "8", "y": "4"},
+      {"x": "9", "y": "4"}
     ]
+
   }
 }

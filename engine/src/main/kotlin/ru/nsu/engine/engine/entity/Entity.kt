@@ -9,6 +9,9 @@ abstract class Entity(
     var moneyAtDeletion: Int = 0
         protected set
 
+    var healthAtDeletion: Int = 0
+        protected set
+
     abstract fun tickHandler(engine: Engine)
     fun delete() {
         canBeDeleted = true
