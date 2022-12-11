@@ -57,11 +57,11 @@
     ],
     [
       "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
+      "road",
+      "road",
+      "road",
+      "road",
+      "road",
       "grass",
       "grass",
       "grass",
@@ -70,9 +70,9 @@
     [
       "road",
       "road",
-      "road",
-      "road",
-      "road",
+      "grass",
+      "grass",
+      "grass",
       "road",
       "road",
       "road",
@@ -187,5 +187,68 @@
         }
       ]
     }
+  },
+  "enemy_config": {
+    "enemy_types": {
+      "enemy_type_1": {
+        "health": 10,
+        "speed": 1000,
+        "file": "enemy_file_1.png",
+        "enemy_attack": 1
+      },
+      "enemy_type_2": {
+        "health": 20,
+        "speed": 2000,
+        "file": "enemy_file_2.png",
+        "enemy_attack": 2
+      }
+    },
+    "enemy_waves": [
+      {
+        "between_delay_ms": 1000,
+        "wave": [
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2"
+        ]
+      },
+      {
+        "between_delay_ms": 500,
+        "wave": [
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2",
+          "enemy_type_1",
+          "enemy_type_2"
+        ]
+      }
+    ],
+    "enemy_path": [
+      {"x": "0", "y": "4"},
+      {"x": "1", "y": "4"},
+      {"x": "1", "y": "3"},
+      {"x": "2", "y": "3"},
+      {"x": "3", "y": "3"},
+      {"x": "4", "y": "3"},
+      {"x": "5", "y": "3"},
+      {"x": "5", "y": "4"},
+      {"x": "6", "y": "4"},
+      {"x": "7", "y": "4"},
+      {"x": "8", "y": "4"},
+      {"x": "9", "y": "4"}
+    ]
+
   }
 }

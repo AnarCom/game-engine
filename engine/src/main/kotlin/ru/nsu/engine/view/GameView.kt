@@ -2,13 +2,15 @@ package ru.nsu.engine.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import javafx.scene.Group
+import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
-import ru.nsu.engine.util.Wallet
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
+import ru.nsu.engine.util.Wallet
 import ru.nsu.engine.view.state.GameState
 import ru.nsu.engine.view.subview.BuildTowerSubview
 import ru.nsu.engine.view.subview.TopGameSubview
@@ -22,11 +24,11 @@ class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
-    private val engine: Engine = Engine {
-        wallet.addMoney(it)
-    }
+    private val engine: Engine
+    private val nextWaveButton: Button
 
     private val circleImage: ImageView
+    private val fieldGroup: Group
 
     // user window state
     private val towerConfigSubview: TowerConfigSubview
@@ -104,32 +106,59 @@ class GameView : View("My View") {
 
         wallet = topSubview.wallet
         wallet.addMoney(levelConfiguration.startMoney)
+
+        fieldGroup = group {
+            baseField.forEach {
+                it.forEach { image ->
+                    this.add(image)
+                }
+            }
+            towerLevel.forEach { t ->
+                t.forEach { image ->
+                    this.add(image)
+                    image.toFront()
+                }
+            }
+            add(circleImage)
+            circleImage.toFront()
+        }
+
+        engine = Engine(
+            levelConfiguration.enemyConfig,
+            levelConfiguration.cellSize,
+            {
+                wallet.addMoney(it)
+            },
+            {
+                println(it)
+            }
+        )
+
+        nextWaveButton = button("next wave") {
+            action {
+                this.isDisable = true
+                engine.startWave(
+                    {
+                        if (engine.isNextWaveAvailable()) {
+                            this.isDisable = false
+                        }
+                    },
+                    levelConfiguration.enemyConfig.enemyPath
+                )
+            }
+        }
+
     }
 
     override val root = borderpane {
         center = stackpane {
-            group {
-                baseField.forEach {
-                    it.forEach { image ->
-                        this.add(image)
-                    }
-                }
-                towerLevel.forEach { t ->
-                    t.forEach { image ->
-                        this.add(image)
-                        image.toFront()
-                    }
-                }
-                add(circleImage)
-                circleImage.toFront()
-            }
+            add(fieldGroup)
+            engine.root = fieldGroup
         }
-//        left {
-//            button("left")
-//        }
         right {
             vbox {
                 add(buildTowerSubview)
+                add(nextWaveButton)
                 add(towerConfigSubview)
             }
         }
