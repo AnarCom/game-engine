@@ -1,4 +1,4 @@
-package ru.nsu.editor.view
+фвpackage ru.nsu.editor.view
 
 import ru.nsu.lib.Library
 import tornadofx.*
