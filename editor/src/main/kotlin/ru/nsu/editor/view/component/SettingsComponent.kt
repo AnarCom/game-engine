@@ -1,5 +1,8 @@
 package ru.nsu.editor.view.component
 
-interface SettingsComponent<T> {
-    fun getSettings(): T
+import tornadofx.*
+
+abstract class SettingsComponent<out T>(title: String): View(title) {
+    abstract fun getSettings(): T
+
 }
