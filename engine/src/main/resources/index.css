@@ -1,4 +1,17 @@
 .root{
-  /*-fx-font-size: 12pt;*/
-  -fx-font-family: "Serif";
+  -fx-font-family: 'Helvetica Neue', Arial, sans-serif;
+  -fx-max-width: 25%;
+  -fx-padding: 10px;
+  -fx-font-weight: 400px;
+  -fx-font-size: 24px;
+  -fx-text-alignment: center;
+  -fx-background-image: url(../../../../configuration/content/background.png);
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover;
+  -fx-background-position: center;
+}
+
+.button {
+  -fx-max-width: 150px;
+  -fx-padding: 5px;
 }
