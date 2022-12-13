@@ -16,16 +16,16 @@ class TowerUpgradeComponent(index:Int) : View("TowerUpgradeComponent") {
                 }
             }
         }
-        squeezebox {//TODO move to commponent
+        squeezebox {//TODO move to component
             fold("Attack", expanded = false){
                 form{
                     fieldset {
-                        field("Type"){
+                        /*field("Type"){
                             combobox<TowerEditorView.TowerType>{//TODO: No field
                                 items= FXCollections.observableArrayList(*TowerEditorView.TowerType.values())
                             }
                         }
-//                                    if(towerData.updates[index]) TODO: towertype == AOE -> add field aoe radius || else - max attack enemies
+                                    if(towerData.updates[index]) TODO: towertype == AOE -> add field aoe radius || else - max attack enemies*/
                         field("Damage"){
                             textfield {
                                 textProperty().addListener { obs, old, new ->

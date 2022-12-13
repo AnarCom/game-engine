@@ -15,21 +15,8 @@ import tornadofx.*
 import java.io.File
 
 class TowerEditorView : View("Tower editor") {
-    private var towerData = TowerData("",
-        mutableListOf(
-            TowerUpdate(0, 0, 0, 0, 0, 0)
-        )
-    )
     private var towerUpgradeComponents = mutableListOf<TowerUpgradeComponent>()
     private lateinit var upgradeStack:VBox
-
-    init {
-        val mapper = jacksonObjectMapper()
-//        mapper.writeValue(
-//            File("./configuration/test.json"),
-//            TowerData
-//        )
-    }
 
     override val root = borderpane {
         top{
@@ -41,11 +28,39 @@ class TowerEditorView : View("Tower editor") {
                 button("Save").action {
 
                 }
-                button("Import")
+                button("Import").action {
+
+                }
+                field("Type"){
+                    combobox<String>{//TODO: No field
+                        items=FXCollections.observableArrayList("Tower", "Enemy", "")
+                    }
+                }
             }
         }
         left {
-            button("Left")
+            vbox{
+                squeezebox {
+                    fold("Tower files", expanded = true){
+                        listview<String> {
+                            items.add("Alpha")
+                            items.add("Beta")
+                            items.add("Gamma")
+                            items.add("Delta")
+                            items.add("Epsilon")
+                        }
+                    }
+                    fold("Sprites", expanded = true){
+                        listview<String> {
+                            items.add("Alpha")
+                            items.add("Beta")
+                            items.add("Gamma")
+                            items.add("Delta")
+                            items.add("Epsilon")
+                        }
+                    }
+                }
+            }
         }
         right {
             vbox {
@@ -54,7 +69,9 @@ class TowerEditorView : View("Tower editor") {
                         form {
                             fieldset {
                                 field("Tower sprite"){
-                                    textfield(towerData.file)
+                                    textfield(){
+
+                                    }
                                 }
                                 field("Projectile sprite TBD"){
                                     textfield()
@@ -74,7 +91,6 @@ class TowerEditorView : View("Tower editor") {
                     left = hbox{
                         button("Add upgrade"){
                             action {
-//                                towerData.upgrades.add(TowerUpdate(0,0,0,0,0,0)) TODO: pull data from components only on save
                                 val newComponent = TowerUpgradeComponent(towerUpgradeComponents.size)
                                 towerUpgradeComponents.add(newComponent)
                                 upgradeStack.add(newComponent)
@@ -97,9 +113,11 @@ class TowerEditorView : View("Tower editor") {
                 }
             }
         }
-    }
-
-    enum class TowerType{
-        AOE, TARGET
+        center {
+            rectangle {
+                width=200.0
+                height=200.0
+            }
+        }
     }
 }
