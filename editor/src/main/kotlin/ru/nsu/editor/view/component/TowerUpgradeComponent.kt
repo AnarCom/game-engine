@@ -8,7 +8,7 @@ import tornadofx.*
 import java.awt.TextField
 import java.lang.NumberFormatException
 
-class TowerUpgradeComponent(index:Int) : SettingsComponent2<TowerUpdate>("TowerSettingsComponent") {//: SettingsComponent<TowerUpdate>, View("TowerUpgradeComponent")
+class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSettingsComponent") {//: SettingsComponent<TowerUpdate>, View("TowerUpgradeComponent")
 //    override val titleProperty: StringProperty = SimpleStringProperty("TowerSettingsComponent")
     override fun getSettings(): TowerUpdate {
         try{
@@ -25,28 +25,6 @@ class TowerUpgradeComponent(index:Int) : SettingsComponent2<TowerUpdate>("TowerS
         }
         return TowerUpdate(0,0,0,0,0,0)
     }
-
-//    private fun toIntValid(tf : javafx.scene.control.TextField): Int {
-//        try {
-//            return tf.text.toInt()
-//        } catch (e: NumberFormatException){
-//
-//        }
-//        return 0
-//    } TODO: валидация и покраска неправильных полей.
-    /*    private fun createTextField(): javafx.scene.control.TextField {
-        return textfield() {
-            text = defaultInt
-            textProperty().addListener{obs, old, new ->
-                if(!regexNum.matches(new)){
-                    println(obs)
-                }
-            }
-        }
-    }
-
-    private val regexNum = Regex("^[0-9]+\$")
-    */
 
     private val defaultInt = "0"
 

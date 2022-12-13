@@ -10,8 +10,8 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.SkinBase
 import javafx.scene.layout.VBox
 import org.w3c.dom.Node
+import ru.nsu.editor.view.component.EnemySettingsComponent
 import ru.nsu.editor.view.component.SettingsComponent
-import ru.nsu.editor.view.component.SettingsComponent2
 import ru.nsu.editor.view.component.TowerSettingsComponent
 import ru.nsu.editor.view.component.TowerUpgradeComponent
 import ru.nsu.lib.common.TowerData
@@ -21,23 +21,31 @@ import tornadofx.*
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.Objects
 
 class TowerEditorView : View("Tower editor") {
     private var menuValue = SimpleObjectProperty<LayoutType>()
     private val mapper = jacksonObjectMapper()
     private val jsonFolder = "./jsons"
 
-    private lateinit var settings: SettingsComponent2<TowerData>
+    private var settings: SettingsComponent<Any>
     private lateinit var settingsParent: VBox
-    private fun refreshSettings(new: SettingsComponent2<TowerData>){
+    private fun refreshSettings(new: SettingsComponent<Any>){
         settings.removeFromParent()
         settings = new
         settingsParent.add(settings)
     }
     init {
-        menuValue.value = LayoutType.NONE
+        menuValue.value = LayoutType.TOWER
         menuValue.onChange {
             println(menuValue.value)
+            when(it){
+                LayoutType.TOWER -> refreshSettings(TowerSettingsComponent())
+                LayoutType.ENEMY -> refreshSettings(EnemySettingsComponent())
+                else -> {
+                    println("No such when")
+                }
+            }
         }
         settings = TowerSettingsComponent()
     }
@@ -50,9 +58,9 @@ class TowerEditorView : View("Tower editor") {
                     replaceWith<MainMenuView>()
                 }
                 button("Save").action {
-                    Files.createDirectories(Paths.get(jsonFolder, "/$menuValue/"))
-                    println(Paths.get(jsonFolder, "/$menuValue/test.json").toFile())
-                    mapper.writeValue(Paths.get(jsonFolder, "/$menuValue/test.json").toFile(), settings.getSettings())
+                    Files.createDirectories(Paths.get(jsonFolder, "/${menuValue.value}/"))
+//                    println(Paths.get(jsonFolder, "/$menuValue/test.json").toFile())
+                    mapper.writeValue(Paths.get(jsonFolder, "/${menuValue.value}/test.json").toFile(), settings.getSettings())
                 }
                 button("Import").action {
 
