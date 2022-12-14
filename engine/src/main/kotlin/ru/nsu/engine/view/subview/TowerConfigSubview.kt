@@ -5,6 +5,7 @@ import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.engine.util.TowerRadiusImageFactory
+import ru.nsu.engine.util.Wallet
 import ru.nsu.lib.common.Size
 import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
@@ -12,7 +13,8 @@ import tornadofx.*
 
 class TowerConfigSubview(
     private val attackRadiusImageView: ImageView,
-    pixelSize: Size
+    pixelSize: Size,
+    private val wallet: Wallet,
 ) : View() {
 
     private val towerRadiusImageFactory = TowerRadiusImageFactory(
@@ -23,9 +25,11 @@ class TowerConfigSubview(
 
     private var updateButton: Button = button("Update") {
         action {
-            val tower = activeTower
-            tower.update()
-            showTowerConfig(tower)
+            if (wallet.writeOffMoneyIfCan(activeTower.getUpdateCost())) {
+                val tower = activeTower
+                tower.update()
+                showTowerConfig(tower)
+            }
         }
     }
 

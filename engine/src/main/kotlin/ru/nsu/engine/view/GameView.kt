@@ -83,9 +83,14 @@ class GameView : View("My View") {
                 (levelConfiguration.cellSize.width * levelConfiguration.fieldStructure[0].size)
                     .toDouble()
         }
+
+        wallet = topSubview.wallet
+        wallet.addMoney(levelConfiguration.startMoney)
+
         towerConfigSubview = TowerConfigSubview(
             circleImage,
             levelConfiguration.cellSize,
+            wallet
         )
         towerLevel = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
@@ -103,9 +108,6 @@ class GameView : View("My View") {
                 }
             }.toTypedArray()
         }.toTypedArray()
-
-        wallet = topSubview.wallet
-        wallet.addMoney(levelConfiguration.startMoney)
 
         fieldGroup = group {
             baseField.forEach {
