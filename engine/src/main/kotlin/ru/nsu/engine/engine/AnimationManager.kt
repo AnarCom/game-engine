@@ -1,9 +1,15 @@
 package ru.nsu.engine.engine
 
+import javafx.animation.PathTransition
+import javafx.event.EventHandler
 import javafx.animation.Timeline
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.image.ImageView
+import javafx.scene.shape.LineTo
+import javafx.scene.shape.MoveTo
+import javafx.scene.shape.Path
+import javafx.util.Duration
 import ru.nsu.lib.common.EnemyPathPoint
 import ru.nsu.lib.common.EnemyType
 import tornadofx.*
@@ -20,15 +26,28 @@ class AnimationManager(
         image: ImageView,
         enemyConfig: EnemyType,
         path: Array<EnemyPathPoint>,
-        endPathCallback: ()-> Unit
+        endPathCallback: () -> Unit
     ): Int {
         synchronized(map) {
             val id = counter++
             Platform.runLater {
                 parent.add(image)
-//                println("${path[0].x.toDouble()} ${path[0].y.toDouble()}")
-//                image.x = path[0].x.toDouble()
-//                image.y = path[0].y.toDouble()
+                val pathForAmination = Path()
+                val moveTo = MoveTo(path[0].x.toDouble() + 20.0, path[0].y.toDouble() + 20.0)
+                pathForAmination.elements.add(moveTo)
+                for (currentPath in path.slice(1 until path.size)) {
+                    val line = LineTo(currentPath.x.toDouble() + 20.0, currentPath.y.toDouble() + 20.0)
+                    pathForAmination.elements.add(line)
+                }
+                val pathTransition =
+                    PathTransition(Duration.millis(((path.size - 1) * enemyConfig.speed).toDouble()), pathForAmination)
+                pathTransition.node = image
+                pathTransition.orientation = PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT
+                pathTransition.onFinishedProperty().set(EventHandler {
+                    image.removeFromParent()
+                    endPathCallback()
+                })
+                pathTransition.play()
             }
             map[id] = image
 
@@ -40,14 +59,16 @@ class AnimationManager(
     fun deleteFromAnimationPath(
         id: Int
     ) {
-        synchronized(map) {
-            val imageView = map[id]!!
-            Platform.runLater {
-                imageView.hide()
-                imageView.removeFromParent()
-            }
-
-            map.remove(id)
-        }
+//        synchronized(map) {
+//            val imageView = map[id]!!
+//            Platform.runLater {
+//                if(imageView.parent != null) {
+//                    imageView.hide()
+//                    imageView.removeFromParent()
+//                }
+//            }
+//
+//            map.remove(id)
+//        }
     }
 }

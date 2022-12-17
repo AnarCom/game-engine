@@ -16,8 +16,8 @@ class Enemy(
     var animationId:Int = 0
 
     init {
-        imageView.x = enemyPath[0].x.toDouble()
-        imageView.y = enemyPath[0].y.toDouble()
+//        imageView.x = enemyPath[0].x.toDouble()
+//        imageView.y = enemyPath[0].y.toDouble()
         imageView.fitHeight = 40.0
         imageView.fitWidth = 40.0
     }
