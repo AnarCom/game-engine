@@ -9,7 +9,6 @@ import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
-import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.engine.util.Wallet
 import ru.nsu.engine.util.parsePath
 import ru.nsu.engine.view.state.GameState
@@ -195,7 +194,7 @@ class GameView : View("My View") {
                 actionOnClick = ActionOnClick.NONE
                 if (!wallet.writeOffMoneyIfCan(
                         levelConfiguration.towersConfig[
-                                buildTowerSubview.selectedTowerType
+                            buildTowerSubview.selectedTowerType
                         ]!!
                             .upgrades[0]
                             .cost
@@ -203,14 +202,12 @@ class GameView : View("My View") {
                 ) {
                     return
                 }
-                engine.registerEntity(
-                    Tower(
-                        levelConfiguration.towersConfig[
-                                buildTowerSubview.selectedTowerType
-                        ]!!,
-                        Position(x, y),
-                        towerLevel[y][x]
-                    )
+                engine.createTower(
+                    levelConfiguration.towersConfig[
+                        buildTowerSubview.selectedTowerType
+                    ]!!,
+                    Position(x, y),
+                    towerLevel[y][x]
                 )
             }
 

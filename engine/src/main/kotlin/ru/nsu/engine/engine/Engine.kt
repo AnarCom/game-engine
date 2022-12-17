@@ -4,9 +4,11 @@ import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.scene.Node
+import javafx.scene.image.ImageView
 import javafx.util.Duration
 import ru.nsu.engine.engine.entity.Enemy
 import ru.nsu.engine.engine.entity.Entity
+import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.lib.common.*
 
@@ -19,17 +21,17 @@ class Engine(
     private val entityList: MutableList<Entity> = mutableListOf()
     private var idCounter: Int = 0
     private val timeline = Timeline()
-    var root: Node?= null
+    var root: Node? = null
         set(value) {
             animationManager = AnimationManager(
                 value!!
             )
             field = value
         }
-    private var animationManager:AnimationManager? = null
+    private var animationManager: AnimationManager? = null
 
     init {
-        timeline.keyFrames.add(KeyFrame(Duration.millis(100.0), { t ->
+        timeline.keyFrames.add(KeyFrame(Duration.millis(20.0), { t ->
             deleteRemovableElements()
             generateTick()
             deleteRemovableElements()
@@ -44,13 +46,18 @@ class Engine(
             entityList.add(entity)
         }
         if (entity is Enemy) {
-            animationManager!!.addAtAnimationPath(
+            val animationId = animationManager!!.addEnemyAtAnimationPath(
                 entity.imageView,
                 entity.enemyType,
-                entity.enemyPath
-            ) {
-                entity.pathEndEventHandler()
-            }
+                entity.enemyPath,
+                {
+                    entity.pathEndEventHandler()
+                },
+                { damage ->
+                    entity.decreaseHp(damage)
+                }
+            )
+            entity.animationId = animationId
 
         }
         return idCounter++
@@ -94,9 +101,6 @@ class Engine(
                         it.animationId
                     )
                 }
-//            if (toDelete.isNotEmpty()) {
-//                println(toDelete.size)
-//            }
         }
     }
 
@@ -133,6 +137,42 @@ class Engine(
         return factoryTread
     }
 
+    fun getEnemies(): List<Enemy> {
+        synchronized(entityList) {
+            return entityList.filterIsInstance<Enemy>()
+                .toList()
+        }
+    }
+
+    fun createTower(
+        towerConfig: TowerData,
+        towerPosition: Position,
+        towerLevelImage: ImageView,
+    ) {
+        registerEntity(Tower(towerConfig, towerPosition, towerLevelImage))
+    }
+
+    fun spawnShell(
+        from: Pair<Double, Double>,
+        to: Enemy,
+        damage: Int
+    ) {
+        animationManager?.spawnShell(
+            from, to, damage
+        )
+    }
+
+    fun createEnemy(
+        enemyType: EnemyType,
+        enemyPath: Array<EnemyPathPoint>
+    ) {
+        registerEntity(
+            Enemy(
+                enemyType, enemyPath
+            )
+        )
+    }
+
     private class WaveFactory(
         private val enemyWave: EnemyWave,
         private val engine: Engine,
@@ -142,12 +182,7 @@ class Engine(
     ) : Runnable {
         override fun run() {
             for (i in enemyWave.wave) {
-                engine.registerEntity(
-                    Enemy(
-                        enemies[i]!!,
-                        enemyPathPoint
-                    )
-                )
+                engine.createEnemy(enemies[i]!!, enemyPathPoint)
                 Thread.sleep(enemyWave.betweenDelayMs.toLong())
             }
             waveIsDoneCallback()

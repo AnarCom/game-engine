@@ -1,15 +1,15 @@
 package ru.nsu.engine.engine
 
 import javafx.animation.PathTransition
-import javafx.event.EventHandler
-import javafx.animation.Timeline
 import javafx.application.Platform
+import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.image.ImageView
 import javafx.scene.shape.LineTo
 import javafx.scene.shape.MoveTo
 import javafx.scene.shape.Path
 import javafx.util.Duration
+import ru.nsu.engine.engine.entity.Enemy
 import ru.nsu.lib.common.EnemyPathPoint
 import ru.nsu.lib.common.EnemyType
 import tornadofx.*
@@ -22,13 +22,14 @@ class AnimationManager(
 
 
     private var counter = 0
-    fun addAtAnimationPath(
+    fun addEnemyAtAnimationPath(
         image: ImageView,
         enemyConfig: EnemyType,
         path: Array<EnemyPathPoint>,
-        endPathCallback: () -> Unit
+        endPathCallback: () -> Unit,
+        registerDamage: (damage: Int) -> Unit
     ): Int {
-        synchronized(map) {
+        synchronized(this) {
             val id = counter++
             Platform.runLater {
                 parent.add(image)
@@ -36,15 +37,19 @@ class AnimationManager(
                 val moveTo = MoveTo(path[0].x.toDouble() + 20.0, path[0].y.toDouble() + 20.0)
                 pathForAmination.elements.add(moveTo)
                 for (currentPath in path.slice(1 until path.size)) {
-                    val line = LineTo(currentPath.x.toDouble() + 20.0, currentPath.y.toDouble() + 20.0)
+                    val line =
+                        LineTo(currentPath.x.toDouble() + 20.0, currentPath.y.toDouble() + 20.0)
                     pathForAmination.elements.add(line)
                 }
                 val pathTransition =
-                    PathTransition(Duration.millis(((path.size - 1) * enemyConfig.speed).toDouble()), pathForAmination)
+                    PathTransition(
+                        Duration.millis(((path.size - 1) * enemyConfig.speed).toDouble()),
+                        pathForAmination
+                    )
                 pathTransition.node = image
                 pathTransition.orientation = PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT
                 pathTransition.onFinishedProperty().set(EventHandler {
-                    image.removeFromParent()
+//                    image.removeFromParent()
                     endPathCallback()
                 })
                 pathTransition.play()
@@ -59,16 +64,24 @@ class AnimationManager(
     fun deleteFromAnimationPath(
         id: Int
     ) {
-//        synchronized(map) {
-//            val imageView = map[id]!!
-//            Platform.runLater {
-//                if(imageView.parent != null) {
-//                    imageView.hide()
-//                    imageView.removeFromParent()
-//                }
-//            }
-//
-//            map.remove(id)
-//        }
+        synchronized(this) {
+            val imageView = map[id]!!
+            Platform.runLater {
+                if (imageView.parent != null) {
+                    imageView.hide()
+                    imageView.removeFromParent()
+                }
+            }
+
+            map.remove(id)
+        }
+    }
+
+    fun spawnShell(
+        from: Pair<Double, Double>,
+        to: Enemy,
+        damage: Int
+    ) {
+        to.decreaseHp(damage)
     }
 }

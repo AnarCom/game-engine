@@ -259,16 +259,7 @@
       {
         "between_delay_ms": 1000,
         "wave": [
-          "enemy_type_1",
-          "enemy_type_2",
-          "enemy_type_1",
-          "enemy_type_2",
-          "enemy_type_1",
-          "enemy_type_2",
-          "enemy_type_1",
-          "enemy_type_2",
-          "enemy_type_1",
-          "enemy_type_2"
+          "enemy_type_1"
         ]
       },
       {
