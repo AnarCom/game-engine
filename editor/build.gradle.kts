@@ -16,7 +16,6 @@ repositories {
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-//    implementation("no.tornado:tornadofx:1.7.20")
     implementation ("no.tornado:tornadofx:2.0.0-SNAPSHOT")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0")
 
