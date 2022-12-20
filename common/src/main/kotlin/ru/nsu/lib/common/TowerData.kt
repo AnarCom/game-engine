@@ -2,5 +2,5 @@ package ru.nsu.lib.common
 
 class TowerData(
     val file:String,
-    val updates:Array<TowerUpdate>
+    val upgrades:MutableList<TowerUpdate> = mutableListOf()
 )
