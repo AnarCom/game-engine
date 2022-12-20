@@ -7,14 +7,16 @@ import javafx.scene.layout.VBox
 import ru.nsu.lib.common.TowerData
 import tornadofx.*
 
-class TowerSettingsComponent : SettingsComponent<TowerData>("TowerSettingsComponent") {//SettingsComponent<TowerData>, View("TowerSettingsComponent")
-//    override val titleProperty: StringProperty = SimpleStringProperty("TowerSettingsComponent")
+class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsComponent") {
     private var towerUpgradeComponents = mutableListOf<TowerUpgradeComponent>()
     private lateinit var upgradeStack: VBox
-    override fun getSettings(): TowerData {
-        return TowerData(
-            file = towerSprite.text,
-            upgrades = towerUpgradeComponents.map { it.getSettings() }.toMutableList()
+    override fun getSettings(): Pair<String, TowerData> {
+        return Pair(
+            "",
+            TowerData(
+                file = towerSprite.text,
+                upgrades = towerUpgradeComponents.map { it.getSettings() }.toMutableList()
+            )
         )
     }
 

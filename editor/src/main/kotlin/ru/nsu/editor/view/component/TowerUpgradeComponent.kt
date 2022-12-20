@@ -8,8 +8,7 @@ import tornadofx.*
 import java.awt.TextField
 import java.lang.NumberFormatException
 
-class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSettingsComponent") {//: SettingsComponent<TowerUpdate>, View("TowerUpgradeComponent")
-//    override val titleProperty: StringProperty = SimpleStringProperty("TowerSettingsComponent")
+class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSettingsComponent") {
     override fun getSettings(): TowerUpdate {
         try{
             return TowerUpdate(
@@ -49,12 +48,6 @@ class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSe
             fold("Attack", expanded = false){
                 form{
                     fieldset {
-                        field("Type"){
-                            combobox<TowerEditorView.TowerType>{//TODO: No field
-                                items= FXCollections.observableArrayList(*TowerEditorView.TowerType.values())
-                            }
-                        }
-//                                    if(towerData.updates[index]) TODO: towertype == AOE -> add field aoe radius || else - max attack enemies
                         field("Damage"){
                             add(damage)
                         }

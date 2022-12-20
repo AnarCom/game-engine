@@ -6,19 +6,21 @@ import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 import java.lang.NumberFormatException
 
-class EnemySettingsComponent : SettingsComponent<EnemyType>("EnemySettingsComponent") {
-    override fun getSettings(): EnemyType {
+class EnemySettingsComponent : NamedSettingsComponent<EnemyType>("EnemySettingsComponent") {
+    override fun getSettings(): Pair<String, EnemyType> {
         try{
-            return EnemyType(
-                health = health.text.toInt(),
-                speed = speed.text.toInt(),
-                file = sprite.text,
-                enemyAttack = damage.text.toInt(),
+            return Pair("",
+                EnemyType(
+                    health = health.text.toInt(),
+                    speed = speed.text.toInt(),
+                    file = sprite.text,
+                    enemyAttack = damage.text.toInt(),
+                )
             )
         } catch(e : NumberFormatException){
             warning("Неверный формат данных", content = e.message)
         }
-        return EnemyType(0,0,"./",0)
+        return Pair("New_Enemy", EnemyType(0,0,"./",0))
     }
 
     private val defaultInt = "0"

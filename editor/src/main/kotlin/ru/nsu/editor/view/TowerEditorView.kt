@@ -10,10 +10,8 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.SkinBase
 import javafx.scene.layout.VBox
 import org.w3c.dom.Node
-import ru.nsu.editor.view.component.EnemySettingsComponent
-import ru.nsu.editor.view.component.SettingsComponent
-import ru.nsu.editor.view.component.TowerSettingsComponent
-import ru.nsu.editor.view.component.TowerUpgradeComponent
+import ru.nsu.editor.view.component.*
+import ru.nsu.editor.view.enums.*
 import ru.nsu.lib.common.TowerData
 import ru.nsu.lib.common.TowerUpdate
 
@@ -26,11 +24,11 @@ import java.util.Objects
 class TowerEditorView : View("Tower editor") {
     private var menuValue = SimpleObjectProperty<LayoutType>()
     private val mapper = jacksonObjectMapper()
-    private val jsonFolder = "./jsons"
+    private val jsonFolder = "./configuration/jsons"
 
-    private var settings: SettingsComponent<Any>
+    private var settings: NamedSettingsComponent<Any>
     private lateinit var settingsParent: VBox
-    private fun refreshSettings(new: SettingsComponent<Any>){
+    private fun refreshSettings(new: NamedSettingsComponent<Any>){
         settings.removeFromParent()
         settings = new
         settingsParent.add(settings)
@@ -59,7 +57,6 @@ class TowerEditorView : View("Tower editor") {
                 }
                 button("Save").action {
                     Files.createDirectories(Paths.get(jsonFolder, "/${menuValue.value}/"))
-//                    println(Paths.get(jsonFolder, "/$menuValue/test.json").toFile())
                     mapper.writeValue(Paths.get(jsonFolder, "/${menuValue.value}/test.json").toFile(), settings.getSettings())
                 }
                 button("Import").action {
@@ -103,9 +100,5 @@ class TowerEditorView : View("Tower editor") {
                 height=200.0
             }
         }
-    }
-
-    private enum class LayoutType{
-        NONE, TOWER, ENEMY, MAP, WAVE
     }
 }
