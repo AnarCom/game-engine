@@ -4,11 +4,34 @@ import javafx.geometry.Insets
 import javafx.scene.layout.VBox
 import ru.nsu.editor.view.utils.*
 import ru.nsu.lib.common.TowerData
+import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 
-class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsComponent") {
+class TowerSettingsComponent(
+    override val preset: Pair<String, TowerData> = Pair(
+        defaultString,
+        TowerData(
+            defaultUrl,
+            mutableListOf(
+                TowerUpdate(0, 0, 0, 0, 0, 0)
+            )
+        )
+    )
+) : NamedSettingsComponent<TowerData>("TowerSettingsComponent") {
     private var towerUpgradeComponents = mutableListOf<TowerUpgradeComponent>()
-    private lateinit var upgradeStack: VBox
+    private var upgradeStack: VBox = vbox {}
+
+    private var towerSprite = textfield { text = data.file }
+    private var name = textfield { text = filename }
+
+    init {
+        data.upgrades.forEachIndexed {idx, value ->
+            val new = TowerUpgradeComponent(idx, value)
+            towerUpgradeComponents.add(new)
+            upgradeStack.add(new)
+        }
+    }
+
     override fun getSettings(): Pair<String, TowerData> {
         return Pair(
             name.text,
@@ -19,11 +42,6 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
         )
     }
 
-
-
-    private var towerSprite = textfield { text= defaultUrl }
-    private var name = textfield { text= defaultString }
-
     override val root = vbox {
         form {
             fieldset {
@@ -33,10 +51,10 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
             }
         }
         squeezebox {
-            fold("Visuals", expanded = true){
+            fold("Visuals", expanded = true) {
                 form {
                     fieldset {
-                        field("Tower sprite"){
+                        field("Tower sprite") {
                             add(towerSprite)
                         }
                     }
@@ -44,15 +62,11 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
             }
         }
         scrollpane {
-            upgradeStack = vbox{
-                val new = TowerUpgradeComponent(0)
-                towerUpgradeComponents.add(new)
-                add(new)
-            }
+            add(upgradeStack)
         }
-        borderpane{
-            left = hbox{
-                button("Add upgrade"){
+        borderpane {
+            left = hbox {
+                button("Add upgrade") {
                     action {
                         val newComponent = TowerUpgradeComponent(towerUpgradeComponents.size)
                         towerUpgradeComponents.add(newComponent)
@@ -63,8 +77,8 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
                     }
                 }
             }
-            right = hbox{
-                button("Remove"){
+            right = hbox {
+                button("Remove") {
                     action {
                         towerUpgradeComponents.removeLast().removeFromParent()
                     }

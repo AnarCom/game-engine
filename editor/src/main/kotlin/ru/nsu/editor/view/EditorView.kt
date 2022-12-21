@@ -2,31 +2,20 @@ package ru.nsu.editor.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import javafx.beans.property.Property
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
-import javafx.collections.ObservableList
-import javafx.geometry.Insets
-import javafx.scene.control.ComboBox
 import javafx.scene.control.ListView
-import javafx.scene.control.SkinBase
-import javafx.scene.image.ImageView
 import javafx.scene.layout.VBox
-import org.w3c.dom.Node
-import org.w3c.dom.events.EventTarget
 import ru.nsu.editor.view.component.*
 import ru.nsu.editor.view.enums.*
 import ru.nsu.editor.view.utils.*
-import ru.nsu.lib.common.TowerData
-import ru.nsu.lib.common.TowerUpdate
 
 import tornadofx.*
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Objects
 
-class TowerEditorView : View("Tower editor") {
+class EditorView : View("Tower editor") {
     private var menuValue = SimpleObjectProperty<LayoutType>()
     private val mapper = jacksonObjectMapper()
     private val jsonFolder = "./configuration/jsons"
@@ -37,10 +26,20 @@ class TowerEditorView : View("Tower editor") {
         }
     private var settingsParent = vbox { add(settings) }
 
-
     private fun <T> genListview(arrayList: ArrayList<T>): ListView<T> {
         return listview{
             items.addAll(arrayList)
+            onUserSelect {
+                settings = menuValue.value.buildSettingsComp(
+                    Pair(
+                        it.toString(),
+                        mapper.readValue(
+                            Paths.get(jsonFolder, menuValue.value.toString(), "${it.toString()}.json").toFile(),
+                            menuValue.value.getPresetClass().java
+                        )
+                    )
+                )
+            }
         }
     }
     private var fileList = genListview<String>(arrayListOf())
@@ -95,16 +94,16 @@ class TowerEditorView : View("Tower editor") {
             println(menuValue.value)
             println(getLayoutTypedFiles(menuValue.value))
 
-
+            fileList = genListview(getLayoutTypedFiles(menuValue.value))
 
             when (it) {
                 LayoutType.TOWER -> {
                     settings = TowerSettingsComponent()
                 }
 
-                LayoutType.ENEMY -> {
-                    settings = EnemySettingsComponent()
-                }
+//                LayoutType.ENEMY -> {
+//                    settings = EnemySettingsComponent()
+//                }
 
                 else -> {
                     println("No such when")

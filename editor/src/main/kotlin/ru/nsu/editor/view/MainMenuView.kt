@@ -7,8 +7,8 @@ import tornadofx.*
 class MainMenuView : View() {
 
     override val root = vbox {
-        button("Tower editor").action {
-            replaceWith<TowerEditorView>()
+        button("Editor").action {
+            replaceWith<EditorView>()
         }
         button("QUIT").action {
             close()

@@ -7,7 +7,12 @@ import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 import java.lang.NumberFormatException
 
-class EnemySettingsComponent : NamedSettingsComponent<EnemyType>("EnemySettingsComponent") {
+class EnemySettingsComponent(
+    override val preset: Pair<String, EnemyType> = Pair(
+        defaultString,
+        EnemyType(0, 0, defaultUrl, 0)
+    )
+) : NamedSettingsComponent<EnemyType>("EnemySettingsComponent") {
     override fun getSettings(): Pair<String, EnemyType> {
         try{
             return Pair(
@@ -26,21 +31,25 @@ class EnemySettingsComponent : NamedSettingsComponent<EnemyType>("EnemySettingsC
     }
 
 
-    private var damage = textfield { text = defaultInt }
-    private var health = textfield { text = defaultInt }
-    private var speed = textfield { text = defaultInt }
-    private var sprite = textfield { text = defaultUrl }
-    private var name = textfield { text = defaultString }
+    private var damage = textfield { text = data.enemyAttack.toString() }
+    private var health = textfield { text = data.health.toString() }
+    private var speed = textfield { text = data.speed.toString() }
+    private var sprite = textfield { text = data.file }
+    private var name = textfield { text = filename }
 
 
     override val root = vbox{
+        form {
+            fieldset {
+                field("Enemy name") {
+                    add(name)
+                }
+            }
+        }
         squeezebox {//TODO move to component
             fold("Enemy", expanded = true){
                 form{
                     fieldset {
-                        field("Name"){
-                            add(name)
-                        }
                         field("Sprite"){
                             add(sprite)
                         }
