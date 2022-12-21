@@ -1,9 +1,8 @@
 package ru.nsu.editor.view.component
 
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.property.StringProperty
 import javafx.geometry.Insets
 import javafx.scene.layout.VBox
+import ru.nsu.editor.view.utils.*
 import ru.nsu.lib.common.TowerData
 import tornadofx.*
 
@@ -12,7 +11,7 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
     private lateinit var upgradeStack: VBox
     override fun getSettings(): Pair<String, TowerData> {
         return Pair(
-            "",
+            name.text,
             TowerData(
                 file = towerSprite.text,
                 upgrades = towerUpgradeComponents.map { it.getSettings() }.toMutableList()
@@ -20,11 +19,19 @@ class TowerSettingsComponent : NamedSettingsComponent<TowerData>("TowerSettingsC
         )
     }
 
-    private val defaultUrl = "./content"
 
-    private var towerSprite = textfield { text=defaultUrl }
+
+    private var towerSprite = textfield { text= defaultUrl }
+    private var name = textfield { text= defaultString }
 
     override val root = vbox {
+        form {
+            fieldset {
+                field("Tower name") {
+                    add(name)
+                }
+            }
+        }
         squeezebox {
             fold("Visuals", expanded = true){
                 form {

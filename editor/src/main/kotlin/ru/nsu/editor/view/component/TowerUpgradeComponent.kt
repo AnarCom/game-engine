@@ -3,6 +3,7 @@ package ru.nsu.editor.view.component
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import org.w3c.dom.Node
+import ru.nsu.editor.view.utils.defaultInt
 import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 import java.awt.TextField
@@ -25,7 +26,6 @@ class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSe
         return TowerUpdate(0,0,0,0,0,0)
     }
 
-    private val defaultInt = "0"
 
     private var damage = textfield { text = defaultInt }
     private var speed = textfield { text = defaultInt }
