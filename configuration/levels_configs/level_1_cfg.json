@@ -15,6 +15,30 @@
     "road": {
       "file": "road_1.png",
       "is_build_available": false
+    },
+    "road-1": {
+      "file": "new-road_1.png",
+      "is_build_available": false
+    },
+    "road-2": {
+      "file": "new-road_2.png",
+      "is_build_available": false
+    },
+    "road-3": {
+      "file": "new-road_3.png",
+      "is_build_available": false
+    },
+    "road-4": {
+      "file": "new-road_4.png",
+      "is_build_available": false
+    },
+    "road-5": {
+      "file": "new-road_5.png",
+      "is_build_available": false
+    },
+    "road-6": {
+      "file": "new-road_6.png",
+      "is_build_available": false
     }
   },
   "start_money": 10000,
@@ -57,27 +81,27 @@
     ],
     [
       "grass",
-      "road",
-      "road",
-      "road",
-      "road",
-      "road",
+      "road-4",
+      "road-1",
+      "road-1",
+      "road-1",
+      "road-3",
       "grass",
       "grass",
       "grass",
       "grass"
     ],
     [
-      "road",
-      "road",
+      "road-1",
+      "road-2",
       "grass",
       "grass",
       "grass",
-      "road",
-      "road",
-      "road",
-      "road",
-      "road"
+      "road-5",
+      "road-1",
+      "road-1",
+      "road-1",
+      "road-1"
     ],
     [
       "grass",
