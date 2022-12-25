@@ -20,6 +20,26 @@
       "file": "grass-2.png",
       "is_build_available": true
     },
+    "grass-3": {
+      "file": "grass-3.png",
+      "is_build_available": true
+    },
+    "grass-4": {
+      "file": "grass-4.png",
+      "is_build_available": true
+    },
+    "grass-5": {
+      "file": "grass-5.png",
+      "is_build_available": true
+    },
+    "grass-6": {
+      "file": "grass-6.png",
+      "is_build_available": true
+    },
+    "trees-1": {
+      "file": "trees-1.png",
+      "is_build_available": true
+    },
     "road": {
       "file": "road_1.png",
       "is_build_available": false
@@ -52,49 +72,49 @@
   "start_money": 10000,
   "field_structure": [
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
+      "trees-1",
       "grass-2",
       "grass-2",
       "grass-2",
       "grass-2",
       "grass-2",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
+      "grass-5",
       "road-4",
       "road-1",
       "road-1",
       "road-1",
       "road-3",
-      "grass",
+      "grass-6",
       "grass-2",
       "grass-2",
       "grass-2"
@@ -102,9 +122,9 @@
     [
       "road-1",
       "road-2",
-      "grass",
+      "grass-3",
       "grass-1",
-      "grass",
+      "grass-4",
       "road-5",
       "road-1",
       "road-1",
@@ -114,9 +134,9 @@
     [
       "grass-1",
       "grass-1",
-      "grass",
-      "grass",
-      "grass",
+      "trees-1",
+      "trees-1",
+      "trees-1",
       "grass-1",
       "grass-1",
       "grass-1",
@@ -124,40 +144,40 @@
       "grass-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ]
   ],
   "towers_config": {
