@@ -12,6 +12,14 @@
       "file": "grass_1.png",
       "is_build_available": true
     },
+    "grass-1": {
+      "file": "grass-1.png",
+      "is_build_available": true
+    },
+    "grass-2": {
+      "file": "grass-2.png",
+      "is_build_available": true
+    },
     "road": {
       "file": "road_1.png",
       "is_build_available": false
@@ -69,11 +77,11 @@
     ],
     [
       "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
+      "grass-2",
+      "grass-2",
+      "grass-2",
+      "grass-2",
+      "grass-2",
       "grass",
       "grass",
       "grass",
@@ -87,15 +95,15 @@
       "road-1",
       "road-3",
       "grass",
-      "grass",
-      "grass",
-      "grass"
+      "grass-2",
+      "grass-2",
+      "grass-2"
     ],
     [
       "road-1",
       "road-2",
       "grass",
-      "grass",
+      "grass-1",
       "grass",
       "road-5",
       "road-1",
@@ -104,16 +112,16 @@
       "road-1"
     ],
     [
+      "grass-1",
+      "grass-1",
       "grass",
       "grass",
       "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "grass-1",
+      "grass-1",
+      "grass-1",
+      "grass-1",
+      "grass-1"
     ],
     [
       "grass",
