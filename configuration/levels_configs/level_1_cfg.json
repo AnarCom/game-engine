@@ -12,120 +12,172 @@
       "file": "grass_1.png",
       "is_build_available": true
     },
+    "grass-1": {
+      "file": "grass-1.png",
+      "is_build_available": true
+    },
+    "grass-2": {
+      "file": "grass-2.png",
+      "is_build_available": true
+    },
+    "grass-3": {
+      "file": "grass-3.png",
+      "is_build_available": true
+    },
+    "grass-4": {
+      "file": "grass-4.png",
+      "is_build_available": true
+    },
+    "grass-5": {
+      "file": "grass-5.png",
+      "is_build_available": true
+    },
+    "grass-6": {
+      "file": "grass-6.png",
+      "is_build_available": true
+    },
+    "trees-1": {
+      "file": "trees-1.png",
+      "is_build_available": true
+    },
     "road": {
       "file": "road_1.png",
+      "is_build_available": false
+    },
+    "road-1": {
+      "file": "new-road_1.png",
+      "is_build_available": false
+    },
+    "road-2": {
+      "file": "new-road_2.png",
+      "is_build_available": false
+    },
+    "road-3": {
+      "file": "new-road_3.png",
+      "is_build_available": false
+    },
+    "road-4": {
+      "file": "new-road_4.png",
+      "is_build_available": false
+    },
+    "road-5": {
+      "file": "new-road_5.png",
+      "is_build_available": false
+    },
+    "road-6": {
+      "file": "new-road_6.png",
       "is_build_available": false
     }
   },
   "start_money": 10000,
   "field_structure": [
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "grass-2",
+      "grass-2",
+      "grass-2",
+      "grass-2",
+      "grass-2",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "road",
-      "road",
-      "road",
-      "road",
-      "road",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "grass-5",
+      "road-4",
+      "road-1",
+      "road-1",
+      "road-1",
+      "road-3",
+      "grass-6",
+      "grass-2",
+      "grass-2",
+      "grass-2"
     ],
     [
-      "road",
-      "road",
-      "grass",
-      "grass",
-      "grass",
-      "road",
-      "road",
-      "road",
-      "road",
-      "road"
+      "road-1",
+      "road-2",
+      "grass-3",
+      "grass-1",
+      "grass-4",
+      "road-5",
+      "road-1",
+      "road-1",
+      "road-1",
+      "road-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "grass-1",
+      "grass-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "grass-1",
+      "grass-1",
+      "grass-1",
+      "grass-1",
+      "grass-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ],
     [
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass",
-      "grass"
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1",
+      "trees-1"
     ]
   ],
   "towers_config": {
