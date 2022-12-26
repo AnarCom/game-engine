@@ -3,7 +3,7 @@ package ru.nsu.engine.engine.entity
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import ru.nsu.engine.engine.Engine
-import ru.nsu.engine.util.Common
+import ru.nsu.engine.util.parsePath
 import ru.nsu.lib.common.TowerData
 
 class Tower(
@@ -17,7 +17,7 @@ class Tower(
 
     init {
         towerLevelImage.image = Image(
-            Common().parsePath(towerConfig.file)
+            parsePath(towerConfig.file)
         )
         moneyAtDeletion = getActiveUpdate().removeMoneyCashback
     }

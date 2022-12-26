@@ -10,8 +10,8 @@ import javafx.scene.input.MouseEvent
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
-import ru.nsu.engine.util.Common
 import ru.nsu.engine.util.Wallet
+import ru.nsu.engine.util.parsePath
 import ru.nsu.engine.view.state.GameState
 import ru.nsu.engine.view.subview.BuildTowerSubview
 import ru.nsu.engine.view.subview.TopGameSubview
@@ -59,7 +59,7 @@ class GameView : View("My View") {
         baseField = (0 until levelConfiguration.fieldStructure.size).map { i ->
             (0 until levelConfiguration.fieldStructure[i].size).map { j ->
                 imageview(
-                    Common().parsePath(levelConfiguration.fieldPartsConfig[levelConfiguration.fieldStructure[i][j]]!!.file),
+                    parsePath(levelConfiguration.fieldPartsConfig[levelConfiguration.fieldStructure[i][j]]!!.file),
                     false
                 ) {
                     fitWidth = levelConfiguration.cellSize.width.toDouble()
