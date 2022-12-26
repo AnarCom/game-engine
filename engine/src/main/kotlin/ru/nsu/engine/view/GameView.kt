@@ -196,7 +196,7 @@ class GameView : View("My View") {
                         levelConfiguration.towersConfig[
                                 buildTowerSubview.selectedTowerType
                         ]!!
-                            .updates[0]
+                            .upgrades[0]
                             .cost
                     )
                 ) {

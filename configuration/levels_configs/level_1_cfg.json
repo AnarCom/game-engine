@@ -183,7 +183,7 @@
   "towers_config": {
     "type_1": {
       "file": "tower_1.png",
-      "updates": [
+      "upgrades": [
         {
           "radius": 1,
           "max_enemy_count": -1,
@@ -212,7 +212,7 @@
     },
     "type_2": {
       "file": "tower_2.png",
-      "updates": [
+      "upgrades": [
         {
           "radius": 2,
           "max_enemy_count": -1,

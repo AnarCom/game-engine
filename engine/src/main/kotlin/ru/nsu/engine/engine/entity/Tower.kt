@@ -29,8 +29,8 @@ class Tower(
         towerLevelImage.image = Image("empty.png")
     }
 
-    fun getActiveUpdate() = towerConfig.updates[activeUpdate]
-    fun canBeUpdated() = (towerConfig.updates.size - 1) > activeUpdate
+    fun getActiveUpdate() = towerConfig.upgrades[activeUpdate]
+    fun canBeUpdated() = (towerConfig.upgrades.size - 1) > activeUpdate
     fun update(): Boolean {
         if (canBeUpdated()) {
             activeUpdate++
@@ -44,7 +44,7 @@ class Tower(
         if (!canBeUpdated()) {
             -1
         } else {
-            towerConfig.updates[
+            towerConfig.upgrades[
                     activeUpdate + 1
             ].cost
         }
