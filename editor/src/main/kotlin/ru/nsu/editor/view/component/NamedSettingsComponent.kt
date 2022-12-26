@@ -9,4 +9,6 @@ abstract class NamedSettingsComponent<out T : Any>(title: String): SettingsCompo
     val data: T
         get() = preset.second
     abstract override fun getSettings(): Pair<String, T>
+
+    //TODO: Add sprite field and setter
 }

@@ -3,6 +3,7 @@ package ru.nsu.editor.view.enums
 import ru.nsu.editor.view.component.*
 import ru.nsu.lib.common.EnemyType
 import ru.nsu.lib.common.EnemyWave
+import ru.nsu.lib.common.FieldImageInfo
 import ru.nsu.lib.common.TowerData
 import kotlin.jvm.Throws
 import kotlin.reflect.KClass
@@ -55,6 +56,24 @@ enum class LayoutType {
 
         override fun getPresetClass(): KClass<*> {
             return EnemyWave::class
+        }
+
+    },
+
+    TILE {
+        override fun buildSettingsComp(preset: Pair<String, Any>?): NamedSettingsComponent<Any> {
+            if (preset == null)
+                return TileSettingsComponent()
+            if (preset.second is FieldImageInfo) {
+                @Suppress("UNCHECKED_CAST")
+                return TileSettingsComponent(preset as Pair<String, FieldImageInfo>)
+            } else {
+                throw TypeCastException("Cast error while building component")
+            }
+        }
+
+        override fun getPresetClass(): KClass<*> {
+            return FieldImageInfo::class
         }
 
     };
