@@ -8,9 +8,9 @@
 }
 
 .button {
-  -fx-min-width: 200px;
-  -fx-min-height: 80px;
-  -fx-padding: 14px;
-  -fx-border-insets: 14px;
-  -fx-background-insets: 14px;
+  -fx-min-width: 150px;
+  -fx-min-height: 50px;
+  -fx-padding: 7px;
+  -fx-border-insets: 7px;
+  -fx-background-insets: 7px;
 }
