@@ -1,7 +1,6 @@
 package ru.nsu.editor.view
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
 import javafx.scene.control.ListView
@@ -12,6 +11,7 @@ import ru.nsu.editor.view.utils.*
 
 import tornadofx.*
 import java.io.File
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -26,8 +26,8 @@ class EditorView : View("Tower editor") {
         }
     private var settingsParent = vbox { add(settings) }
 
-    private fun <T> genListview(arrayList: ArrayList<T>): ListView<T> {
-        return listview{
+    private fun genFileListview(arrayList: ArrayList<String>): ListView<String> {
+        return listview {
             items.addAll(arrayList)
             onUserSelect {
                 settings = menuValue.value.buildSettingsComp(
@@ -42,7 +42,16 @@ class EditorView : View("Tower editor") {
             }
         }
     }
-    private var fileList = genListview<String>(arrayListOf())
+
+    private fun genContentListView(arrayList: ArrayList<String>): ListView<String>{
+        return listview {
+            items.addAll(arrayList)
+            onUserSelect {
+                clipboard.putString(Paths.get(defaultContentUrl, it).toString())
+            }
+        }
+    }
+    private var fileList = genFileListview(arrayListOf())
         set(value) {
             field = refreshEntity(
                 fileList,
@@ -52,65 +61,73 @@ class EditorView : View("Tower editor") {
         }
     private var fileListParent = vbox { add(fileList) }
 
+    private var contentList = genContentListView(arrayListOf())
+        set(value){
+            field = refreshEntity(
+                contentList,
+                contentListParent,
+                value
+            )
+        }
+    private var contentListParent = vbox { add(contentList) }
 
-    private fun getLayoutTypedFiles(layout: LayoutType): ArrayList<String> {
+
+    private fun getFilenames(uri: URI): ArrayList<String>{
         val filenames: ArrayList<String> = arrayListOf()
-        File(
-            Paths.get(jsonFolder, layout.name).toUri()
-        ).list()?.forEach { filenames.add(getFilenameFromURI(it)) }
+        File(uri).list()?.forEach { filenames.add(getFilenameFromURI(it)) }
         return filenames
     }
 
-    private fun saveSettings(){
+    private fun saveSettings() {
         val (name, params) = settings.getSettings()
         Files.createDirectories(Paths.get(jsonFolder, menuValue.value.toString()))
         val filepath = Paths.get(jsonFolder, menuValue.value.toString(), "$name.json").toFile()
-        val saveAction = {mapper.writeValue(filepath, params)}
-        if(File(filepath.toString()).exists()){
+        val saveAction = {
+            mapper.writeValue(filepath, params)
+            fileList = genFileListview(getFilenames(Paths.get(jsonFolder, menuValue.value.name).toUri()))
+        }
+        if (File(filepath.toString()).exists()) {
             confirm(
                 header = "Override",
                 content = "$name file exists. Do you want to override it?",
                 actionFn = saveAction
             )
-        } else {saveAction()}
+        } else {
+            saveAction()
+        }
     }
-    private fun <T: View> refreshEntity(obj: T, parent: VBox, new: T): T {
+
+    private fun <T : View> refreshEntity(obj: T, parent: VBox, new: T): T {
         obj.removeFromParent()
         parent.add(new)
         return new
     }
-    private fun <T: javafx.scene.Node> refreshEntity(obj: T, parent: VBox, new: T): T {
+
+    private fun <T : javafx.scene.Node> refreshEntity(obj: T, parent: VBox, new: T): T {
         obj.removeFromParent()
         parent.add(new)
         return new
     }
+
     init {
         menuValue.value = LayoutType.TOWER
 
         settings = TowerSettingsComponent()
-        fileList = genListview(getLayoutTypedFiles(menuValue.value))
+
+        /*println(Paths.get(defaultContentUrl).toUri())
+        println(getFilenames(Paths.get(defaultContentUrl).toUri()))
+        println(Paths.get(jsonFolder, menuValue.value.name).toUri())
+        println(getFilenames(Paths.get(jsonFolder, menuValue.value.name).toUri()))*/
+
+        contentList = genContentListView(getFilenames(Paths.get(defaultContentUrl).toUri()))
+        fileList = genFileListview(getFilenames(Paths.get(jsonFolder, menuValue.value.name).toUri()))
 
         menuValue.onChange {
             println(menuValue.value)
-            println(getLayoutTypedFiles(menuValue.value))
 
-            fileList = genListview(getLayoutTypedFiles(menuValue.value))
-
-            when (it) {
-                LayoutType.TOWER -> {
-                    settings = TowerSettingsComponent()
-                }
-
-//                LayoutType.ENEMY -> {
-//                    settings = EnemySettingsComponent()
-//                }
-
-                else -> {
-                    println("No such when")
-                }
-            }
+            fileList = genFileListview(getFilenames(Paths.get(jsonFolder, menuValue.value.name).toUri()))
+            settings = menuValue.value.buildSettingsComp()
         }
-        settings = TowerSettingsComponent()
     }
 
     override val root = borderpane {
@@ -136,13 +153,7 @@ class EditorView : View("Tower editor") {
                         add(fileListParent)
                     }
                     fold("Sprites", expanded = true) {
-                        listview<String> {
-                            items.add("Alpha")
-                            items.add("Beta")
-                            items.add("Gamma")
-                            items.add("Delta")
-                            items.add("Epsilon")
-                        }
+                        add(contentListParent)
                     }
                 }
             }

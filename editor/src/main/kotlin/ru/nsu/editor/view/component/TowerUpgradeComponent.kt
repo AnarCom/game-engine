@@ -2,6 +2,7 @@ package ru.nsu.editor.view.component
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import javafx.geometry.Insets
 import org.w3c.dom.Node
 import ru.nsu.editor.view.utils.defaultInt
 import ru.nsu.editor.view.utils.defaultString
@@ -43,7 +44,7 @@ class TowerUpgradeComponent(
             left = hbox {
                 text("Upgrade #$index") {
                     hboxConstraints {
-                        marginTopBottom(15.0)
+                        margin = Insets(15.0)
                     }
                 }
             }

@@ -11,7 +11,7 @@ class TowerSettingsComponent(
     override val preset: Pair<String, TowerData> = Pair(
         defaultString,
         TowerData(
-            defaultUrl,
+            defaultContentUrl,
             mutableListOf(
                 TowerUpdate(0, 0, 0, 0, 0, 0)
             )
@@ -63,6 +63,7 @@ class TowerSettingsComponent(
         }
         scrollpane {
             add(upgradeStack)
+            isFitToWidth = true
         }
         borderpane {
             left = hbox {

@@ -10,7 +10,7 @@ import java.lang.NumberFormatException
 class EnemySettingsComponent(
     override val preset: Pair<String, EnemyType> = Pair(
         defaultString,
-        EnemyType(0, 0, defaultUrl, 0)
+        EnemyType(defaultContentUrl, 0, 0, 0, 0)
     )
 ) : NamedSettingsComponent<EnemyType>("EnemySettingsComponent") {
     override fun getSettings(): Pair<String, EnemyType> {
@@ -18,22 +18,24 @@ class EnemySettingsComponent(
             return Pair(
                 name.text,
                 EnemyType(
+                    file = sprite.text,
                     health = health.text.toInt(),
                     speed = speed.text.toInt(),
-                    file = sprite.text,
                     enemyAttack = damage.text.toInt(),
+                    gold = gold.text.toInt()
                 )
             )
         } catch(e : NumberFormatException){
             warning("Неверный формат данных", content = e.message)
         }
-        return Pair("New_Enemy", EnemyType(0,0,"./",0))
+        return Pair("New_Enemy", EnemyType(defaultContentUrl, 0, 0, 0, 0))
     }
 
 
     private var damage = textfield { text = data.enemyAttack.toString() }
     private var health = textfield { text = data.health.toString() }
     private var speed = textfield { text = data.speed.toString() }
+    private var gold = textfield { text = data.gold.toString() }
     private var sprite = textfield { text = data.file }
     private var name = textfield { text = filename }
 
@@ -61,6 +63,9 @@ class EnemySettingsComponent(
                         }
                         field("Health"){
                             add(health)
+                        }
+                        field("Gold for slain"){
+                            add(gold)
                         }
                     }
                 }

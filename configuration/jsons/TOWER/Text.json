@@ -1,0 +1,1 @@
+{"file":"./configuration/content/tower_1","upgrades":[{"radius":30,"max_enemy_count":40,"cost":100,"shooting_speed":20,"enemy_damage":10,"remove_money_cashback":50},{"radius":60,"max_enemy_count":80,"cost":300,"shooting_speed":40,"enemy_damage":20,"remove_money_cashback":150}]}
