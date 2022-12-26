@@ -18,7 +18,6 @@ import java.nio.file.Paths
 class EditorView : View("Tower editor") {
     private var menuValue = SimpleObjectProperty<LayoutType>()
     private val mapper = jacksonObjectMapper()
-    private val jsonFolder = "./configuration/jsons"
 
     private var settings: NamedSettingsComponent<Any> = TowerSettingsComponent()
         set(value) {
@@ -70,13 +69,6 @@ class EditorView : View("Tower editor") {
             )
         }
     private var contentListParent = vbox { add(contentList) }
-
-
-    private fun getFilenames(uri: URI): ArrayList<String>{
-        val filenames: ArrayList<String> = arrayListOf()
-        File(uri).list()?.forEach { filenames.add(getFilenameFromURI(it)) }
-        return filenames
-    }
 
     private fun saveSettings() {
         val (name, params) = settings.getSettings()
@@ -144,6 +136,9 @@ class EditorView : View("Tower editor") {
 
                 }
                 combobox(menuValue, FXCollections.observableArrayList(*LayoutType.values()))
+                button("New").action {
+                    settings = menuValue.value.buildSettingsComp()
+                }
             }
         }
         left {

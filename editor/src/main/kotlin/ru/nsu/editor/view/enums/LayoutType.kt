@@ -1,10 +1,8 @@
 package ru.nsu.editor.view.enums
 
-import ru.nsu.editor.view.component.EnemySettingsComponent
-import ru.nsu.editor.view.component.NamedSettingsComponent
-import ru.nsu.editor.view.component.SettingsComponent
-import ru.nsu.editor.view.component.TowerSettingsComponent
+import ru.nsu.editor.view.component.*
 import ru.nsu.lib.common.EnemyType
+import ru.nsu.lib.common.EnemyWave
 import ru.nsu.lib.common.TowerData
 import kotlin.jvm.Throws
 import kotlin.reflect.KClass
@@ -42,10 +40,26 @@ enum class LayoutType {
         override fun getPresetClass(): KClass<*> {
             return EnemyType::class
         }
-    };
+    },
+    WAVE {
+        override fun buildSettingsComp(preset: Pair<String, Any>?): NamedSettingsComponent<Any> {
+            if (preset == null)
+                return WaveSettingsComponent()
+            if (preset.second is EnemyWave) {
+                @Suppress("UNCHECKED_CAST")
+                return WaveSettingsComponent(preset as Pair<String, EnemyWave>)
+            } else {
+                throw TypeCastException("Cast error while building component")
+            }
+        }
 
+        override fun getPresetClass(): KClass<*> {
+            return EnemyWave::class
+        }
+
+    };
     //    MAP,
-//    WAVE;
+    //    LEVEL;
     @Throws(TypeCastException::class)
     abstract fun buildSettingsComp(preset: Pair<String, Any>? = null): NamedSettingsComponent<Any>
     abstract fun getPresetClass(): KClass<*>
