@@ -5,14 +5,25 @@ import tornadofx.*
 class MainMenuView : View() {
 
     override val root = vbox {
-        button("PLAY").action {
-            replaceWith<LevelSelectView>()
+        vboxConstraints {
+            marginLeftRight(50.0)
         }
-        button("SETTINGS").action {
-            replaceWith<SettingsView>()
+        vbox {
+            button("PLAY").action {
+                replaceWith<LevelSelectView>()
+                vboxConstraints {
+                    marginTop = 60.0
+                }
+            }
         }
-        button("QUIT").action {
-            close()
-        }
+
+            button("SETTINGS").action {
+                replaceWith<SettingsView>()
+            }
+
+            button("QUIT").action {
+                close()
+            }
     }
 }
+

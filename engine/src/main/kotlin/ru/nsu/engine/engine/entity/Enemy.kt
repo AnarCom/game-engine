@@ -2,6 +2,7 @@ package ru.nsu.engine.engine.entity
 
 import javafx.scene.image.ImageView
 import ru.nsu.engine.engine.Engine
+import ru.nsu.engine.util.parsePath
 import ru.nsu.lib.common.EnemyPathPoint
 import ru.nsu.lib.common.EnemyType
 
@@ -10,8 +11,7 @@ class Enemy(
     val enemyPath: Array<EnemyPathPoint>
 ) : Entity() {
     val imageView: ImageView = ImageView(
-        "file:./configuration/content/" +
-                enemyType.file
+        parsePath(enemyType.file)
     )
     var animationId:Int = 0
 
@@ -21,7 +21,6 @@ class Enemy(
         imageView.fitHeight = 40.0
         imageView.fitWidth = 40.0
     }
-
 
     override fun tickHandler(engine: Engine) {
 
