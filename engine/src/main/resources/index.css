@@ -1,10 +1,6 @@
 .root{
   -fx-font-family: 'Helvetica Neue', Arial, sans-serif;
-  -fx-max-width: 25%;
-  -fx-padding: 10px;
-  -fx-font-weight: 400px;
   -fx-font-size: 24px;
-  -fx-text-alignment: center;
   -fx-background-image: url(../../../../configuration/content/background.png);
   -fx-background-repeat: no-repeat;
   -fx-background-size: cover;
@@ -12,6 +8,9 @@
 }
 
 .button {
-  -fx-max-width: 150px;
-  -fx-padding: 5px;
+  -fx-min-width: 200px;
+  -fx-min-height: 80px;
+  -fx-padding: 14px;
+  -fx-border-insets: 14px;
+  -fx-background-insets: 14px;
 }
