@@ -30,7 +30,8 @@ class Tower(
         centerLocation: Pair<Double, Double>,
         engine: Engine
     ): List<Enemy> {
-
+        val attackRadius = abs(towerLevelImage.x - centerLocation.first) +
+                (getActiveUpdate().radius * towerLevelImage.fitWidth)
         return engine.getEnemies().asSequence().map {
             Pair(it, it.getPosition())
         }.map {
@@ -41,7 +42,7 @@ class Tower(
                 )
             )
         }.filter {
-            it.second < 80.0
+            it.second < attackRadius
         }.map {
             it.first
         }.toList()
