@@ -21,6 +21,8 @@ class Engine(
     private val entityList: MutableList<Entity> = mutableListOf()
     private var idCounter: Int = 0
     private val timeline = Timeline()
+    private var waveFactory: WaveFactory? = null
+    private var waveThread: Thread? = null
     var root: Node? = null
         set(value) {
             animationManager = AnimationManager(
@@ -35,6 +37,11 @@ class Engine(
             deleteRemovableElements()
             generateTick()
             deleteRemovableElements()
+            if (!isNextWaveAvailable() && !isEnemyExists() && waveFactory == null) {
+                stop()
+                deleteRemovableElements()
+                println("stop")
+            }
         }))
         timeline.cycleCount = Animation.INDEFINITE
         timeline.play()
@@ -78,6 +85,7 @@ class Engine(
                 it.canBeDeleted
             }
             toDelete.forEach {
+                it.delete()
                 entityList.remove(it)
                 if (it.moneyAtDeletion != 0) {
                     moneyHandler(it.moneyAtDeletion)
@@ -110,23 +118,28 @@ class Engine(
         waveIsDoneCallback: () -> Unit,
         path: Array<EnemyPathPoint>
     ): Thread {
-        val factoryTread = Thread(
-            WaveFactory(
-                enemyConfig.enemyWaves[actualWaveInd],
-                this,
-                waveIsDoneCallback,
-                path.map {
-                    EnemyPathPoint(
-                        it.x * cellSize.width,
-                        it.y * cellSize.height
-                    )
-                }.toTypedArray(),
-                enemyConfig.enemyTypes
-            )
+        waveFactory = WaveFactory(
+            enemyConfig.enemyWaves[actualWaveInd],
+            this,
+            {
+                waveIsDoneCallback()
+                waveFactory = null
+            },
+            path.map {
+                EnemyPathPoint(
+                    it.x * cellSize.width,
+                    it.y * cellSize.height
+                )
+            }.toTypedArray(),
+            enemyConfig.enemyTypes
         )
-        factoryTread.start()
+
+        waveThread = Thread(
+            waveFactory
+        )
+        waveThread!!.start()
         actualWaveInd++
-        return factoryTread
+        return waveThread!!
     }
 
     fun getEnemies(): List<Enemy> {
@@ -163,6 +176,25 @@ class Engine(
                 enemyType, enemyPath
             )
         )
+    }
+
+    private fun isEnemyExists(): Boolean {
+        synchronized(entityList) {
+            return entityList.filterIsInstance<Enemy>().isNotEmpty()
+        }
+    }
+
+    fun stop() {
+        synchronized(entityList) {
+            timeline.stop()
+            if (waveThread != null) {
+                waveThread!!.stop()
+            }
+            entityList.forEach {
+                it.canBeDeleted = true
+            }
+
+        }
     }
 
     private class WaveFactory(

@@ -4,9 +4,16 @@ import javafx.scene.control.Label
 import ru.nsu.engine.util.Wallet
 import tornadofx.*
 
-class TopGameSubview : View("My View") {
+class TopGameSubview(
+    private val deadAction: () -> Unit
+) : View("My View") {
 
     var deadFlag = false
+    private fun dead() {
+        logError("You are dead")
+        deadFlag = true
+        deadAction()
+    }
 
     val wallet: Wallet = Wallet(0,
         {
@@ -22,8 +29,7 @@ class TopGameSubview : View("My View") {
             hpLabel.text = "$it hp"
         },
         {
-            logError("you are dead")
-            deadFlag = true
+            dead()
         }
     )
 

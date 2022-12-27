@@ -3,7 +3,9 @@ package ru.nsu.engine.view
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.scene.Group
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.ButtonType
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
@@ -33,11 +35,32 @@ class GameView : View("My View") {
 
     // user window state
     private val towerConfigSubview: TowerConfigSubview
-    private val topSubview = TopGameSubview()
+    private val topSubview = TopGameSubview() {
+        dead()
+    }
+
     private val buildTowerSubview: BuildTowerSubview
     private val wallet: Wallet
     private val hpWallet: Wallet
 
+    private val deadAlert = Alert(Alert.AlertType.ERROR).apply {
+        this.title = "game over"
+        this.contentText = "you are dead"
+        (this.dialogPane.lookupButton(ButtonType.OK)as Button ).setOnAction {
+            replaceWith<LevelSelectView>()
+        }
+    }
+
+
+    private var isDeadShown = false
+    private fun dead() {
+        nextWaveButton.isDisable = true
+        if (!isDeadShown) {
+            isDeadShown = true
+            engine.stop()
+            deadAlert.show()
+        }
+    }
 
     var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
@@ -86,7 +109,6 @@ class GameView : View("My View") {
                 (levelConfiguration.cellSize.width * levelConfiguration.fieldStructure[0].size)
                     .toDouble()
         }
-
         wallet = topSubview.wallet
         wallet.add(levelConfiguration.startMoney)
         hpWallet = topSubview.hpWallet
@@ -146,7 +168,7 @@ class GameView : View("My View") {
                 this.isDisable = true
                 engine.startWave(
                     {
-                        if (engine.isNextWaveAvailable()) {
+                        if (engine.isNextWaveAvailable() && !topSubview.deadFlag) {
                             this.isDisable = false
                         }
                     },
