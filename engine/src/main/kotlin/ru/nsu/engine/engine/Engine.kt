@@ -46,19 +46,11 @@ class Engine(
             entityList.add(entity)
         }
         if (entity is Enemy) {
-            val animationId = animationManager!!.addEnemyAtAnimationPath(
-                entity.imageView,
-                entity.enemyType,
-                entity.enemyPath,
-                {
-                    entity.pathEndEventHandler()
-                },
-                { damage ->
-                    entity.decreaseHp(damage)
-                }
-            )
-            entity.animationId = animationId
-
+            animationManager!!.addEnemyAtAnimationPath(
+                entity,
+            ) {
+                entity.pathEndEventHandler()
+            }
         }
         return idCounter++
     }
@@ -98,7 +90,7 @@ class Engine(
                 .filterIsInstance(Enemy::class.java)
                 .forEach {
                     animationManager!!.deleteFromAnimationPath(
-                        it.animationId
+                        it
                     )
                 }
         }

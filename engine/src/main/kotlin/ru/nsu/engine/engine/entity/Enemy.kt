@@ -14,7 +14,6 @@ class Enemy(
     val imageView: ImageView = ImageView(
         parsePath(enemyType.file)
     )
-    var animationId: Int = 0
 
     init {
 //        imageView.x = enemyPath[0].x.toDouble()
