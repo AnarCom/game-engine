@@ -247,13 +247,15 @@
         "health": 10,
         "speed": 1000,
         "file": "enemy_file_1.png",
-        "enemy_attack": 1
+        "enemy_attack": 1,
+        "gold": 10
       },
       "enemy_type_2": {
         "health": 20,
         "speed": 2000,
         "file": "enemy_file_2.png",
-        "enemy_attack": 2
+        "enemy_attack": 2,
+        "gold": 5
       }
     },
     "enemy_waves": [

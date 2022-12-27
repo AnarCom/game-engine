@@ -23,7 +23,7 @@ import tornadofx.*
 import java.io.File
 import kotlin.math.abs
 
-class GameView : View("My View") {
+class GameView : Fragment("game") {
     private val levelConfiguration: LevelConfiguration
     private val baseField: Array<Array<ImageView>>
     private val towerLevel: Array<Array<ImageView>>
@@ -48,7 +48,7 @@ class GameView : View("My View") {
         "You are dead!",
         Alert.AlertType.ERROR
     ) {
-        replaceWith<LevelSelectView>()
+        this.close()
     }
 
     private val winAlert = dialogUtil(
@@ -56,7 +56,7 @@ class GameView : View("My View") {
         "You win",
         Alert.AlertType.INFORMATION
     ) {
-        replaceWith<LevelSelectView>()
+        this.close()
     }
 
     private var isEndDialogShown = false
@@ -86,6 +86,7 @@ class GameView : View("My View") {
         }
 
     init {
+        importStylesheet("/index.css")
         val mapper = jacksonObjectMapper()
         levelConfiguration = mapper.readValue(
             File(
