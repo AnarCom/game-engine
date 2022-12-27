@@ -2,15 +2,21 @@ package ru.nsu.editor.view.component
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import javafx.geometry.Insets
 import org.w3c.dom.Node
+import ru.nsu.editor.view.utils.defaultInt
+import ru.nsu.editor.view.utils.defaultString
 import ru.nsu.lib.common.TowerUpdate
 import tornadofx.*
 import java.awt.TextField
 import java.lang.NumberFormatException
 
-class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSettingsComponent") {
+class TowerUpgradeComponent(
+    index: Int,
+    override val preset: TowerUpdate = TowerUpdate(0, 0, 0, 0, 0, 0)
+) : SettingsComponent<TowerUpdate>("TowerSettingsComponent") {
     override fun getSettings(): TowerUpdate {
-        try{
+        try {
             return TowerUpdate(
                 enemyDamage = damage.text.toInt(),
                 shootingSpeed = speed.text.toInt(),
@@ -19,64 +25,62 @@ class TowerUpgradeComponent(index:Int) : SettingsComponent<TowerUpdate>("TowerSe
                 cost = cost.text.toInt(),
                 removeMoneyCashback = sell.text.toInt()
             )
-        } catch(e : NumberFormatException){
+        } catch (e: NumberFormatException) {
             warning("Неверный формат данных", content = e.message)
         }
-        return TowerUpdate(0,0,0,0,0,0)
+        return TowerUpdate(0, 0, 0, 0, 0, 0)
     }
 
-    private val defaultInt = "0"
 
-    private var damage = textfield { text = defaultInt }
-    private var speed = textfield { text = defaultInt }
-    private var radius = textfield { text = defaultInt }
-    private var maxEnemyCount = textfield { text = defaultInt }
-    private var cost = textfield { text = defaultInt }
-    private var sell = textfield { text = defaultInt }
+    private var damage = textfield { text = preset.enemyDamage.toString() }
+    private var speed = textfield { text = preset.shootingSpeed.toString() }
+    private var radius = textfield { text = preset.radius.toString() }
+    private var maxEnemyCount = textfield { text = preset.maxEnemyCount.toString() }
+    private var cost = textfield { text = preset.cost.toString() }
+    private var sell = textfield { text = preset.removeMoneyCashback.toString() }
 
     override val root = vbox {
         borderpane {
-            left = hbox{
-                text("Upgrade #$index"){
+            left = hbox {
+                text("Upgrade #$index") {
                     hboxConstraints {
-                        marginTopBottom(15.0)
+                        margin = Insets(15.0)
                     }
                 }
             }
         }
         squeezebox {//TODO move to commponent
-            fold("Attack", expanded = false){
-                form{
+            fold("Attack", expanded = false) {
+                form {
                     fieldset {
-                        field("Damage"){
+                        field("Damage") {
                             add(damage)
                         }
-                        field("Speed"){
+                        field("Speed") {
                             add(speed)
                         }
-                        field("Radius"){
+                        field("Radius") {
                             add(radius)
                         }
-                        field("Max enemy to hit"){
+                        field("Max enemy to hit") {
                             add(maxEnemyCount)
                         }
                     }
                 }
             }
-            fold("Economy", expanded = false){
-                form{
+            fold("Economy", expanded = false) {
+                form {
                     fieldset {
-                        if(index == 0){
-                            field("Initial"){
+                        if (index == 0) {
+                            field("Initial") {
+                                add(cost)
+                            }
+                        } else {
+                            field("Upgrade") {
                                 add(cost)
                             }
                         }
-                        else{
-                            field("Upgrade"){
-                                add(cost)
-                            }
-                        }
-                        field("Sell"){
+                        field("Sell") {
                             add(sell)
                         }
 
