@@ -88,10 +88,8 @@ class Tower(
         if (!canBeUpdated()) {
             -1
         } else {
-            towerConfig.updates[
-                activeUpdate + 1
             towerConfig.upgrades[
-                    activeUpdate + 1
+                activeUpdate + 1
             ].cost
         }
 }
