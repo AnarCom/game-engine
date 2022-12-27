@@ -70,6 +70,7 @@
     }
   },
   "start_money": 10000,
+  "start_hp": 15,
   "field_structure": [
     [
       "trees-1",
@@ -260,15 +261,11 @@
         "between_delay_ms": 1000,
         "wave": [
           "enemy_type_1",
-          "enemy_type_2",
           "enemy_type_1",
-          "enemy_type_2",
           "enemy_type_1",
-          "enemy_type_2",
           "enemy_type_1",
-          "enemy_type_2",
           "enemy_type_1",
-          "enemy_type_2"
+          "enemy_type_1"
         ]
       },
       {

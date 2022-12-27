@@ -3,14 +3,15 @@ package ru.nsu.engine.view
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.scene.Group
+import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
-import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.engine.util.Wallet
+import ru.nsu.engine.util.dialogUtil
 import ru.nsu.engine.util.parsePath
 import ru.nsu.engine.view.state.GameState
 import ru.nsu.engine.view.subview.BuildTowerSubview
@@ -20,6 +21,7 @@ import ru.nsu.engine.view.util.ActionOnClick
 import ru.nsu.lib.LevelConfiguration
 import tornadofx.*
 import java.io.File
+import kotlin.math.abs
 
 class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
@@ -33,9 +35,48 @@ class GameView : View("My View") {
 
     // user window state
     private val towerConfigSubview: TowerConfigSubview
-    private val topSubview = TopGameSubview()
+    private val topSubview = TopGameSubview() {
+        dead()
+    }
+
     private val buildTowerSubview: BuildTowerSubview
     private val wallet: Wallet
+    private val hpWallet: Wallet
+
+    private val deadAlert = dialogUtil(
+        "Game over",
+        "You are dead!",
+        Alert.AlertType.ERROR
+    ) {
+        replaceWith<LevelSelectView>()
+    }
+
+    private val winAlert = dialogUtil(
+        "Game over",
+        "You win",
+        Alert.AlertType.INFORMATION
+    ) {
+        replaceWith<LevelSelectView>()
+    }
+
+    private var isEndDialogShown = false
+    private fun dead() {
+        nextWaveButton.isDisable = true
+        if (!isEndDialogShown) {
+            isEndDialogShown = true
+            engine.stop()
+            deadAlert.show()
+        }
+    }
+
+    private fun win() {
+        nextWaveButton.isDisable = true
+        if(!isEndDialogShown){
+            isEndDialogShown = true
+            engine.stop()
+            winAlert.show()
+        }
+    }
 
     var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
@@ -84,10 +125,9 @@ class GameView : View("My View") {
                 (levelConfiguration.cellSize.width * levelConfiguration.fieldStructure[0].size)
                     .toDouble()
         }
-
         wallet = topSubview.wallet
-        wallet.addMoney(levelConfiguration.startMoney)
-
+        wallet.add(levelConfiguration.startMoney)
+        hpWallet = topSubview.hpWallet
         towerConfigSubview = TowerConfigSubview(
             circleImage,
             levelConfiguration.cellSize,
@@ -130,19 +170,24 @@ class GameView : View("My View") {
             levelConfiguration.enemyConfig,
             levelConfiguration.cellSize,
             {
-                wallet.addMoney(it)
+                wallet.add(it)
             },
             {
-                println(it)
+                hpWallet.writeOffIfCan(abs(it))
+            },
+            {
+                win()
             }
         )
+
+        hpWallet.add(levelConfiguration.startHp)
 
         nextWaveButton = button("next wave") {
             action {
                 this.isDisable = true
                 engine.startWave(
                     {
-                        if (engine.isNextWaveAvailable()) {
+                        if (engine.isNextWaveAvailable() && !topSubview.deadFlag) {
                             this.isDisable = false
                         }
                     },
@@ -193,9 +238,9 @@ class GameView : View("My View") {
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
-                if (!wallet.writeOffMoneyIfCan(
+                if (!wallet.writeOffIfCan(
                         levelConfiguration.towersConfig[
-                                buildTowerSubview.selectedTowerType
+                            buildTowerSubview.selectedTowerType
                         ]!!
                             .upgrades[0]
                             .cost
@@ -203,14 +248,12 @@ class GameView : View("My View") {
                 ) {
                     return
                 }
-                engine.registerEntity(
-                    Tower(
-                        levelConfiguration.towersConfig[
-                                buildTowerSubview.selectedTowerType
-                        ]!!,
-                        Position(x, y),
-                        towerLevel[y][x]
-                    )
+                engine.createTower(
+                    levelConfiguration.towersConfig[
+                        buildTowerSubview.selectedTowerType
+                    ]!!,
+                    Position(x, y),
+                    towerLevel[y][x]
                 )
             }
 

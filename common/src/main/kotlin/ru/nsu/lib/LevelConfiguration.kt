@@ -25,6 +25,9 @@ open class LevelConfiguration(
     @field:JsonProperty("start_money")
     val startMoney: Int,
 
+    @field:JsonProperty("start_hp")
+    val startHp: Int,
+
     @field:JsonProperty("enemy_config")
     val enemyConfig: EnemyConfig,
 )

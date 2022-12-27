@@ -7,21 +7,21 @@ class Wallet(
 ) {
     private var value: ComparableAtomicInteger = ComparableAtomicInteger(initialValue)
 
-    fun addMoney(v: Int) = synchronized(this) {
+    fun add(v: Int) = synchronized(this) {
         value.add(v)
         changeHandler(value.get())
     }
 
-    fun getMoney() = synchronized(this) {
+    fun get() = synchronized(this) {
         value.get()
     }
 
-    fun writeOffMoney(v: Int) = synchronized(this) {
+    fun writeOff(v: Int) = synchronized(this) {
         value.dec(v)
         changeHandler(value.get())
     }
 
-    fun writeOffMoneyIfCan(v: Int):Boolean = synchronized(this) {
+    fun writeOffIfCan(v: Int):Boolean = synchronized(this) {
         val res = value.decIfTrue(v) { it >= v }
         changeHandler(value.get())
         if(!res){

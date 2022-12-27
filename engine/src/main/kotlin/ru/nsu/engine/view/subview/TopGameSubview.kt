@@ -4,7 +4,16 @@ import javafx.scene.control.Label
 import ru.nsu.engine.util.Wallet
 import tornadofx.*
 
-class TopGameSubview : View("My View") {
+class TopGameSubview(
+    private val deadAction: () -> Unit
+) : View("My View") {
+
+    var deadFlag = false
+    private fun dead() {
+        logError("You are dead")
+        deadFlag = true
+        deadAction()
+    }
 
     val wallet: Wallet = Wallet(0,
         {
@@ -14,6 +23,19 @@ class TopGameSubview : View("My View") {
             logError("Not enough money")
         }
     )
+
+    val hpWallet = Wallet(0,
+        {
+            hpLabel.text = "$it hp"
+        },
+        {
+            dead()
+        }
+    )
+
+    private val hpLabel: Label = label("") {
+
+    }
 
     private val moneyLabel: Label = label("") {
         textFill = c("green")
@@ -27,6 +49,7 @@ class TopGameSubview : View("My View") {
     override val root = hbox {
         add(moneyLabel)
         add(errorLabel)
+        add(hpLabel)
     }
 
     fun logError(error: String) {

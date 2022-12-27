@@ -4,9 +4,11 @@ import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.scene.Node
+import javafx.scene.image.ImageView
 import javafx.util.Duration
 import ru.nsu.engine.engine.entity.Enemy
 import ru.nsu.engine.engine.entity.Entity
+import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.engine.entity.Tower
 import ru.nsu.lib.common.*
 
@@ -14,44 +16,49 @@ class Engine(
     private val enemyConfig: EnemyConfig,
     private val cellSize: Size,
     private val moneyHandler: (moneyValue: Int) -> Unit,
-    private val healthHandler: (heathChangeValue: Int) -> Unit
+    private val healthHandler: (heathChangeValue: Int) -> Unit,
+    private val winAction: () -> Unit
 ) {
     private val entityList: MutableList<Entity> = mutableListOf()
     private var idCounter: Int = 0
     private val timeline = Timeline()
-    var root: Node?= null
+    private var waveFactory: WaveFactory? = null
+    private var waveThread: Thread? = null
+    var root: Node? = null
         set(value) {
             animationManager = AnimationManager(
                 value!!
             )
             field = value
         }
-    private var animationManager:AnimationManager? = null
+    private var animationManager: AnimationManager? = null
 
     init {
-        timeline.keyFrames.add(KeyFrame(Duration.millis(100.0), { t ->
+        timeline.keyFrames.add(KeyFrame(Duration.millis(20.0), { t ->
             deleteRemovableElements()
             generateTick()
             deleteRemovableElements()
+            if (!isNextWaveAvailable() && !isEnemyExists() && waveFactory == null) {
+                stop()
+                deleteRemovableElements()
+                winAction()
+            }
         }))
         timeline.cycleCount = Animation.INDEFINITE
         timeline.play()
     }
 
-    fun registerEntity(entity: Entity): Int {
+    private fun registerEntity(entity: Entity): Int {
         entity.objectId = idCounter
         synchronized(entityList) {
             entityList.add(entity)
         }
         if (entity is Enemy) {
-            animationManager!!.addAtAnimationPath(
-                entity.imageView,
-                entity.enemyType,
-                entity.enemyPath
+            animationManager!!.addEnemyAtAnimationPath(
+                entity,
             ) {
                 entity.pathEndEventHandler()
             }
-
         }
         return idCounter++
     }
@@ -79,6 +86,7 @@ class Engine(
                 it.canBeDeleted
             }
             toDelete.forEach {
+                it.delete()
                 entityList.remove(it)
                 if (it.moneyAtDeletion != 0) {
                     moneyHandler(it.moneyAtDeletion)
@@ -91,12 +99,9 @@ class Engine(
                 .filterIsInstance(Enemy::class.java)
                 .forEach {
                     animationManager!!.deleteFromAnimationPath(
-                        it.animationId
+                        it
                     )
                 }
-//            if (toDelete.isNotEmpty()) {
-//                println(toDelete.size)
-//            }
         }
     }
 
@@ -114,23 +119,84 @@ class Engine(
         waveIsDoneCallback: () -> Unit,
         path: Array<EnemyPathPoint>
     ): Thread {
-        val factoryTread = Thread(
-            WaveFactory(
-                enemyConfig.enemyWaves[actualWaveInd],
-                this,
-                waveIsDoneCallback,
-                path.map {
-                    EnemyPathPoint(
-                        it.x * cellSize.width,
-                        it.y * cellSize.height
-                    )
-                }.toTypedArray(),
-                enemyConfig.enemyTypes
+        waveFactory = WaveFactory(
+            enemyConfig.enemyWaves[actualWaveInd],
+            this,
+            {
+                waveIsDoneCallback()
+                waveFactory = null
+            },
+            path.map {
+                EnemyPathPoint(
+                    it.x * cellSize.width,
+                    it.y * cellSize.height
+                )
+            }.toTypedArray(),
+            enemyConfig.enemyTypes
+        )
+
+        waveThread = Thread(
+            waveFactory
+        )
+        waveThread!!.start()
+        actualWaveInd++
+        return waveThread!!
+    }
+
+    fun getEnemies(): List<Enemy> {
+        synchronized(entityList) {
+            return entityList.filterIsInstance<Enemy>()
+                .toList()
+        }
+    }
+
+    fun createTower(
+        towerConfig: TowerData,
+        towerPosition: Position,
+        towerLevelImage: ImageView,
+    ) {
+        registerEntity(Tower(towerConfig, towerPosition, towerLevelImage))
+    }
+
+    fun spawnShell(
+        from: Pair<Double, Double>,
+        to: Enemy,
+        damage: Int
+    ) {
+        animationManager?.spawnShell(
+            from, to, damage
+        )
+    }
+
+    fun createEnemy(
+        enemyType: EnemyType,
+        enemyPath: Array<EnemyPathPoint>
+    ) {
+        registerEntity(
+            Enemy(
+                enemyType, enemyPath
             )
         )
-        factoryTread.start()
-        actualWaveInd++
-        return factoryTread
+    }
+
+    private fun isEnemyExists(): Boolean {
+        synchronized(entityList) {
+            return entityList.filterIsInstance<Enemy>().isNotEmpty()
+        }
+    }
+
+    fun stop() {
+        synchronized(entityList) {
+            timeline.stop()
+            if (waveThread != null) {
+                waveThread!!.interrupt()
+//                waveThread!!.stop()
+            }
+            entityList.forEach {
+                it.canBeDeleted = true
+            }
+
+        }
     }
 
     private class WaveFactory(
@@ -142,13 +208,12 @@ class Engine(
     ) : Runnable {
         override fun run() {
             for (i in enemyWave.wave) {
-                engine.registerEntity(
-                    Enemy(
-                        enemies[i]!!,
-                        enemyPathPoint
-                    )
-                )
-                Thread.sleep(enemyWave.betweenDelayMs.toLong())
+                engine.createEnemy(enemies[i]!!, enemyPathPoint)
+                try {
+                    Thread.sleep(enemyWave.betweenDelayMs.toLong())
+                } catch (e: Exception) {
+                    break
+                }
             }
             waveIsDoneCallback()
         }
