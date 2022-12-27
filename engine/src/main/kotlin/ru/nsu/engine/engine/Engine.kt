@@ -16,7 +16,8 @@ class Engine(
     private val enemyConfig: EnemyConfig,
     private val cellSize: Size,
     private val moneyHandler: (moneyValue: Int) -> Unit,
-    private val healthHandler: (heathChangeValue: Int) -> Unit
+    private val healthHandler: (heathChangeValue: Int) -> Unit,
+    private val winAction: () -> Unit
 ) {
     private val entityList: MutableList<Entity> = mutableListOf()
     private var idCounter: Int = 0
@@ -40,14 +41,14 @@ class Engine(
             if (!isNextWaveAvailable() && !isEnemyExists() && waveFactory == null) {
                 stop()
                 deleteRemovableElements()
-                println("stop")
+                winAction()
             }
         }))
         timeline.cycleCount = Animation.INDEFINITE
         timeline.play()
     }
 
-    fun registerEntity(entity: Entity): Int {
+    private fun registerEntity(entity: Entity): Int {
         entity.objectId = idCounter
         synchronized(entityList) {
             entityList.add(entity)
@@ -188,7 +189,8 @@ class Engine(
         synchronized(entityList) {
             timeline.stop()
             if (waveThread != null) {
-                waveThread!!.stop()
+                waveThread!!.interrupt()
+//                waveThread!!.stop()
             }
             entityList.forEach {
                 it.canBeDeleted = true
@@ -207,7 +209,11 @@ class Engine(
         override fun run() {
             for (i in enemyWave.wave) {
                 engine.createEnemy(enemies[i]!!, enemyPathPoint)
-                Thread.sleep(enemyWave.betweenDelayMs.toLong())
+                try {
+                    Thread.sleep(enemyWave.betweenDelayMs.toLong())
+                } catch (e: Exception) {
+                    break
+                }
             }
             waveIsDoneCallback()
         }

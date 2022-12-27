@@ -5,13 +5,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import javafx.scene.Group
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
-import javafx.scene.control.ButtonType
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 import ru.nsu.engine.engine.Engine
 import ru.nsu.engine.engine.entity.Position
 import ru.nsu.engine.util.Wallet
+import ru.nsu.engine.util.dialogUtil
 import ru.nsu.engine.util.parsePath
 import ru.nsu.engine.view.state.GameState
 import ru.nsu.engine.view.subview.BuildTowerSubview
@@ -43,22 +43,38 @@ class GameView : View("My View") {
     private val wallet: Wallet
     private val hpWallet: Wallet
 
-    private val deadAlert = Alert(Alert.AlertType.ERROR).apply {
-        this.title = "game over"
-        this.contentText = "you are dead"
-        (this.dialogPane.lookupButton(ButtonType.OK)as Button ).setOnAction {
-            replaceWith<LevelSelectView>()
+    private val deadAlert = dialogUtil(
+        "Game over",
+        "You are dead!",
+        Alert.AlertType.ERROR
+    ) {
+        replaceWith<LevelSelectView>()
+    }
+
+    private val winAlert = dialogUtil(
+        "Game over",
+        "You win",
+        Alert.AlertType.INFORMATION
+    ) {
+        replaceWith<LevelSelectView>()
+    }
+
+    private var isEndDialogShown = false
+    private fun dead() {
+        nextWaveButton.isDisable = true
+        if (!isEndDialogShown) {
+            isEndDialogShown = true
+            engine.stop()
+            deadAlert.show()
         }
     }
 
-
-    private var isDeadShown = false
-    private fun dead() {
+    private fun win() {
         nextWaveButton.isDisable = true
-        if (!isDeadShown) {
-            isDeadShown = true
+        if(!isEndDialogShown){
+            isEndDialogShown = true
             engine.stop()
-            deadAlert.show()
+            winAlert.show()
         }
     }
 
@@ -158,6 +174,9 @@ class GameView : View("My View") {
             },
             {
                 hpWallet.writeOffIfCan(abs(it))
+            },
+            {
+                win()
             }
         )
 
