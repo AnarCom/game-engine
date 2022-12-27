@@ -70,6 +70,7 @@
     }
   },
   "start_money": 10000,
+  "start_hp": 15,
   "field_structure": [
     [
       "trees-1",

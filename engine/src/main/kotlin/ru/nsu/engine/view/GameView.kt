@@ -139,6 +139,8 @@ class GameView : View("My View") {
             }
         )
 
+        hpWallet.add(levelConfiguration.startHp)
+
         nextWaveButton = button("next wave") {
             action {
                 this.isDisable = true
