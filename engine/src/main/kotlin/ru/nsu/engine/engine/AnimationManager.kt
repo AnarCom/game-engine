@@ -80,7 +80,8 @@ class AnimationManager(
     fun spawnShell(
         from: Pair<Double, Double>,
         to: Enemy,
-        damage: Int
+        damage: Int,
+        pathToShellFile:String = "./configuration/content/shell.png"
     ) {
         to.decreaseHp(damage)
     }
