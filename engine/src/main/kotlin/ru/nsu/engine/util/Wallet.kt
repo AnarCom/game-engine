@@ -12,7 +12,7 @@ class Wallet(
         changeHandler(value.get())
     }
 
-    fun getMoney() = synchronized(this) {
+    fun get() = synchronized(this) {
         value.get()
     }
 

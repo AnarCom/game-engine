@@ -15,6 +15,14 @@ class TopGameSubview : View("My View") {
         }
     )
 
+    val hpWallet = Wallet(0,
+        {
+
+        },
+        {
+
+        })
+
     private val moneyLabel: Label = label("") {
         textFill = c("green")
     }
