@@ -6,6 +6,8 @@ import tornadofx.*
 
 class TopGameSubview : View("My View") {
 
+    var deadFlag = false
+
     val wallet: Wallet = Wallet(0,
         {
             moneyLabel.text = "Balance: $it $"
@@ -17,11 +19,17 @@ class TopGameSubview : View("My View") {
 
     val hpWallet = Wallet(0,
         {
-
+            hpLabel.text = "$it hp"
         },
         {
+            logError("you are dead")
+            deadFlag = true
+        }
+    )
 
-        })
+    private val hpLabel: Label = label("") {
+
+    }
 
     private val moneyLabel: Label = label("") {
         textFill = c("green")
@@ -35,6 +43,7 @@ class TopGameSubview : View("My View") {
     override val root = hbox {
         add(moneyLabel)
         add(errorLabel)
+        add(hpLabel)
     }
 
     fun logError(error: String) {

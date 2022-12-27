@@ -19,6 +19,7 @@ import ru.nsu.engine.view.util.ActionOnClick
 import ru.nsu.lib.LevelConfiguration
 import tornadofx.*
 import java.io.File
+import kotlin.math.abs
 
 class GameView : View("My View") {
     private val levelConfiguration: LevelConfiguration
@@ -35,6 +36,8 @@ class GameView : View("My View") {
     private val topSubview = TopGameSubview()
     private val buildTowerSubview: BuildTowerSubview
     private val wallet: Wallet
+    private val hpWallet: Wallet
+
 
     var actionOnClick: ActionOnClick = ActionOnClick.NONE
         set(value) {
@@ -85,8 +88,8 @@ class GameView : View("My View") {
         }
 
         wallet = topSubview.wallet
-        wallet.addMoney(levelConfiguration.startMoney)
-
+        wallet.add(levelConfiguration.startMoney)
+        hpWallet = topSubview.hpWallet
         towerConfigSubview = TowerConfigSubview(
             circleImage,
             levelConfiguration.cellSize,
@@ -129,10 +132,10 @@ class GameView : View("My View") {
             levelConfiguration.enemyConfig,
             levelConfiguration.cellSize,
             {
-                wallet.addMoney(it)
+                wallet.add(it)
             },
             {
-                println(it)
+                hpWallet.writeOffIfCan(abs(it))
             }
         )
 
@@ -192,7 +195,7 @@ class GameView : View("My View") {
                     return
                 }
                 actionOnClick = ActionOnClick.NONE
-                if (!wallet.writeOffMoneyIfCan(
+                if (!wallet.writeOffIfCan(
                         levelConfiguration.towersConfig[
                             buildTowerSubview.selectedTowerType
                         ]!!

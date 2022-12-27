@@ -25,7 +25,7 @@ class TowerConfigSubview(
 
     private var updateButton: Button = button("Update") {
         action {
-            if (wallet.writeOffMoneyIfCan(activeTower.getUpdateCost())) {
+            if (wallet.writeOffIfCan(activeTower.getUpdateCost())) {
                 val tower = activeTower
                 tower.update()
                 showTowerConfig(tower)
