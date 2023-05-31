@@ -38,7 +38,7 @@ class TopGameSubview(
     }
 
     private val moneyLabel: Label = label("") {
-        textFill = c("green")
+        textFill = c("black")
     }
 
     private val errorLabel: Label = label("") {

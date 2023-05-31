@@ -16,14 +16,17 @@ class MainMenuView : View() {
                 }
             }
         }
+        button("CLIENT").action {
+            val modal = find<ClientView>()
+            modal.openModal()
+        }
+        button("SETTINGS").action {
+            replaceWith<SettingsView>()
+        }
 
-            button("SETTINGS").action {
-                replaceWith<SettingsView>()
-            }
-
-            button("QUIT").action {
-                close()
-            }
+        button("QUIT").action {
+            close()
+        }
     }
 }
 
